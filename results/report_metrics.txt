@@ -1,0 +1,28 @@
+===== SWARM RL RESULTS =====
+
+Random Agent:
+Success Rate: 63%
+Average Reward: 0.63
+Average Steps: 30.55
+
+PPO Agent:
+Success Rate: 100%
+Average Reward: 1.00
+Average Steps: 4.26
+
+Conclusion:
+The PPO agent significantly outperforms the random baseline, achieving perfect success rate and requiring far fewer steps to collect the resource.
+===== GRID SIZE GENERALIZATION =====
+
+5x5 Grid:
+Success Rate: 100.00%
+Average Reward: 1.00
+Average Steps: 4.11
+
+10x10 Grid:
+Success Rate: 97.00%
+Average Reward: 0.97
+Average Steps: 11.42
+
+Conclusion:
+The PPO agent trained on the original 5x5 environment generalizes well to a larger 10x10 grid. However, the average episode length increases, showing that larger environments reduce collection efficiency.
