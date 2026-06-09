@@ -29,3 +29,28 @@ Average Steps: 12.88
 
 Conclusion:
 The PPO agent trained on the original 5x5 environment generalizes well to a larger 10x10 grid. However, the average episode length increases, showing that larger environments reduce collection efficiency.
+
+===== OBSTACLE EXPERIMENT =====
+
+No Obstacles:
+Success Rate: 100.00%
+Average Reward: 1.00
+Average Steps: 3.86
+
+Obstacles 20k:
+Success Rate: 79.00%
+Average Reward: 0.79
+Average Steps: 13.34
+
+Obstacles 50k:
+Success Rate: 70.00%
+Average Reward: 0.70
+Average Steps: 17.35
+
+Obstacles + State 50k:
+Success Rate: 87.00%
+Average Reward: 0.87
+Average Steps: 9.94
+
+Conclusion:
+Adding obstacles increased task difficulty and reduced PPO performance. Increasing training from 20k to 50k timesteps did not improve performance when obstacle positions were not included in the observation. After adding obstacle coordinates to the state representation, performance improved to 87% success rate and the average episode length decreased to 9.94 steps. This suggests that state representation was a key limitation.

@@ -21,6 +21,19 @@ GRID_SIZE_COMPARISON = {
 }
 
 
+OBSTACLE_COMPARISON = {
+    "models": [
+        "No Obstacles",
+        "Obstacles 20k",
+        "Obstacles 50k",
+        "Obstacles + State 50k",
+    ],
+    "success_rates": [100, 79, 70, 87],
+    "average_rewards": [1.00, 0.79, 0.70, 0.87],
+    "average_steps": [3.86, 13.34, 17.35, 9.94],
+}
+
+
 def create_results_folder():
     os.makedirs(RESULTS_DIR, exist_ok=True)
 
@@ -30,6 +43,7 @@ def save_bar_plot(labels, values, ylabel, title, filename, ylim=None):
     plt.bar(labels, values)
     plt.ylabel(ylabel)
     plt.title(title)
+    plt.xticks(rotation=20, ha="right")
 
     if ylim is not None:
         plt.ylim(ylim)
@@ -74,6 +88,25 @@ def plot_grid_size_comparison():
         ylabel="Average Episode Length",
         title="Grid Size Generalization - Average Steps",
         filename="grid_size_average_steps.png",
+    )
+
+
+def plot_obstacle_comparison():
+    save_bar_plot(
+        labels=OBSTACLE_COMPARISON["models"],
+        values=OBSTACLE_COMPARISON["success_rates"],
+        ylabel="Success Rate (%)",
+        title="Obstacle Experiment - Success Rate",
+        filename="obstacle_success_rate.png",
+        ylim=(0, 110),
+    )
+
+    save_bar_plot(
+        labels=OBSTACLE_COMPARISON["models"],
+        values=OBSTACLE_COMPARISON["average_steps"],
+        ylabel="Average Episode Length",
+        title="Obstacle Experiment - Average Steps",
+        filename="obstacle_average_steps.png",
     )
 
 
@@ -122,7 +155,31 @@ def save_metrics_summary():
         file.write(
             "The PPO agent trained on the original 5x5 environment generalizes "
             "well to a larger 10x10 grid. However, the average episode length "
-            "increases, showing that larger environments reduce collection efficiency.\n"
+            "increases, showing that larger environments reduce collection efficiency.\n\n"
+        )
+
+        file.write("===== OBSTACLE EXPERIMENT =====\n\n")
+
+        for index, model in enumerate(OBSTACLE_COMPARISON["models"]):
+            file.write(f"{model}:\n")
+            file.write(
+                f"Success Rate: {OBSTACLE_COMPARISON['success_rates'][index]:.2f}%\n"
+            )
+            file.write(
+                f"Average Reward: {OBSTACLE_COMPARISON['average_rewards'][index]:.2f}\n"
+            )
+            file.write(
+                f"Average Steps: {OBSTACLE_COMPARISON['average_steps'][index]:.2f}\n\n"
+            )
+
+        file.write("Conclusion:\n")
+        file.write(
+            "Adding obstacles increased task difficulty and reduced PPO performance. "
+            "Increasing training from 20k to 50k timesteps did not improve performance "
+            "when obstacle positions were not included in the observation. After adding "
+            "obstacle coordinates to the state representation, performance improved to "
+            "87% success rate and the average episode length decreased to 9.94 steps. "
+            "This suggests that state representation was a key limitation.\n"
         )
 
 
@@ -130,6 +187,7 @@ def main():
     create_results_folder()
     plot_agent_comparison()
     plot_grid_size_comparison()
+    plot_obstacle_comparison()
     save_metrics_summary()
 
     print("Results generated successfully.")
