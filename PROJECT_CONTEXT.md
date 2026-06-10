@@ -10,7 +10,7 @@ The current implementation focuses on a single-agent environment as a foundation
 
 The project is intentionally 2D.
 
-The goal is not to build a realistic simulator but to investigate learning, resource collection efficiency, coordination, and scalability.
+The goal is not to build a realistic simulator but to investigate learning, resource collection efficiency, coordination, scalability, and state representation effects in reinforcement learning systems.
 
 ---
 
@@ -22,22 +22,24 @@ Day 1: COMPLETED
 Day 2: COMPLETED
 Day 3: COMPLETED
 Day 4: COMPLETED
+Day 5: COMPLETED
+Day 6: COMPLETED
 
 ---
 
 # Technologies
 
-- Python
-- Gymnasium
-- Stable-Baselines3
-- PPO
-- NumPy
-- Matplotlib
-- PyTorch
-- Pygame-ce
-- GitHub
-- GitHub Desktop
-- VS Code
+* Python
+* Gymnasium
+* Stable-Baselines3
+* PPO
+* NumPy
+* Matplotlib
+* PyTorch
+* Pygame-ce
+* GitHub
+* GitHub Desktop
+* VS Code
 
 ---
 
@@ -46,29 +48,46 @@ Day 4: COMPLETED
 swarm_rl/
 
 ├── env/
-│   ├── __init__.py
+│   ├── **init**.py
 │   └── foraging_env.py
 │
 ├── tests/
-│   └── random_agent.py
+│   ├── random_agent.py
+│   ├── test_large_grid.py
+│   └── test_obstacles.py
 │
 ├── train/
-│   └── train_ppo.py
+│   ├── train_ppo.py
+│   └── train_ppo_obstacles.py
 │
 ├── evaluation/
 │   ├── test_trained_agent.py
+│   ├── test_obstacle_agent.py
 │   ├── evaluate_model.py
 │   ├── evaluate_random_agent.py
-│   └── compare_agents.py
+│   ├── evaluate_grid_size.py
+│   ├── evaluate_obstacle_model.py
+│   ├── compare_agents.py
+│   └── generate_plots.py
 │
 ├── models/
-│   └── ppo_foraging.zip
+│   ├── ppo_foraging.zip
+│   ├── ppo_foraging_obstacles.zip
+│   ├── ppo_foraging_obstacles_50k.zip
+│   └── ppo_foraging_obstacles_state.zip
+│
+├── results/
+│   ├── success_rate_comparison.png
+│   ├── average_steps_comparison.png
+│   ├── grid_size_success_rate.png
+│   ├── grid_size_average_steps.png
+│   ├── obstacle_success_rate.png
+│   ├── obstacle_average_steps.png
+│   └── report_metrics.txt
 │
 ├── README.md
 ├── requirements.txt
-├── test_setup.py
-├── mini_grid.py
-└── PROJECT_CONTEXT.md
+├── PROJECT_CONTEXT.md
 
 ---
 
@@ -80,16 +99,31 @@ Current grid size:
 
 5 x 5
 
-Observation:
-
-[agent_x, agent_y, food_x, food_y]
-
 Action Space:
 
 0 = up
 1 = down
 2 = left
 3 = right
+
+Current Observation Space:
+
+[
+agent_x,
+agent_y,
+food_x,
+food_y,
+obs1_x,
+obs1_y,
+obs2_x,
+obs2_y,
+obs3_x,
+obs3_y
+]
+
+Observation size:
+
+10
 
 Reward:
 
@@ -98,9 +132,8 @@ Reward:
 
 Episode termination:
 
-- food collected
-OR
-- maximum number of steps reached
+* food collected
+* maximum number of steps reached
 
 Maximum steps:
 
@@ -110,118 +143,220 @@ Food position:
 
 Randomly generated every episode.
 
----
+Obstacles:
 
-# Implemented Files
+Three static obstacles:
 
-## env/foraging_env.py
+[2,1]
+[2,2]
+[2,3]
 
-Custom Gymnasium environment.
-
-Contains:
-
-- reset()
-- step()
-- render()
-
-Rendering is currently text-based.
+Obstacle collisions are blocked.
 
 ---
 
-## tests/random_agent.py
+# Implemented Features
 
-Runs a random-action agent.
+## Day 1 - Environment
 
-Used to verify environment behavior.
+Implemented:
+
+* Custom Gymnasium environment
+* Reset function
+* Step function
+* Text rendering
+* Random food spawning
 
 ---
 
-## train/train_ppo.py
+## Day 2 - PPO Training
 
-Trains a PPO agent.
+Implemented:
 
-Current configuration:
-
-PPO(
-    "MlpPolicy",
-    env,
-    verbose=1
-)
+* PPO training pipeline
+* Stable-Baselines3 integration
+* Model saving and loading
 
 Training:
 
 10000 timesteps
 
-Model saved as:
+Model:
 
-models/ppo_foraging
-
----
-
-## evaluation/test_trained_agent.py
-
-Loads trained PPO model.
-
-Runs a single episode.
-
-Used to visually verify behavior.
+models/ppo_foraging.zip
 
 ---
 
-## evaluation/evaluate_model.py
+## Day 3 - Evaluation & Baseline
 
-Evaluates PPO over 100 episodes.
+Implemented:
 
-Metrics:
+* PPO evaluation
+* Random baseline evaluation
+* Agent comparison
 
-- Success Rate
-- Average Reward
-- Average Episode Length
+Results:
 
-Current results:
+Random Agent:
+
+Success Rate: 63%
+Average Reward: 0.63
+Average Steps: 30.55
+
+PPO Agent:
 
 Success Rate: 100%
 Average Reward: 1.00
-Average Episode Length: 3.87
+Average Steps: 4.26
+
+Conclusion:
+
+PPO significantly outperforms the random baseline.
 
 ---
 
-## evaluation/evaluate_random_agent.py
+## Day 4 - Generalization
 
-Evaluates random baseline over 100 episodes.
+Experiment:
 
-Current results:
+Train PPO on 5x5 environment.
+
+Evaluate on 10x10 environment.
+
+Results:
+
+Success Rate: 96%
+Average Reward: 0.96
+Average Episode Length: 12.88
+
+Conclusion:
+
+The PPO policy generalizes reasonably well to larger environments, although efficiency decreases.
+
+---
+
+## Day 5 - Reporting & Visualization
+
+Implemented:
+
+* Results folder
+* Automatic plot generation
+* Metrics report generation
+* Performance comparison figures
+
+Generated files:
+
+* success_rate_comparison.png
+* average_steps_comparison.png
+* grid_size_success_rate.png
+* grid_size_average_steps.png
+* report_metrics.txt
+
+---
+
+## Day 6 - Obstacles & State Representation
+
+Implemented:
+
+* Static obstacles
+* Obstacle rendering (X)
+* Collision handling
+* Obstacle testing
+* PPO training with obstacles
+* State augmentation experiment
+
+New Observation Space:
+
+[
+agent_x,
+agent_y,
+food_x,
+food_y,
+obs1_x,
+obs1_y,
+obs2_x,
+obs2_y,
+obs3_x,
+obs3_y
+]
+
+---
+
+# Experimental Results
+
+## Baseline PPO (No Obstacles)
+
+Success Rate: 100%
+Average Reward: 1.00
+Average Episode Length: 3.86
+
+---
+
+## Random Agent
 
 Success Rate: 63%
 Average Reward: 0.63
 Average Episode Length: 30.55
 
-Results may vary slightly due to randomness.
+---
+
+## Grid Size Generalization (10x10)
+
+Success Rate: 96%
+Average Reward: 0.96
+Average Episode Length: 12.88
 
 ---
 
-## evaluation/compare_agents.py
+## Obstacle Experiment
 
-Compares:
+### PPO + Obstacles (20k)
 
-- Random Agent
-- PPO Agent
+Success Rate: 79%
+Average Reward: 0.79
+Average Episode Length: 13.34
 
-Current comparison:
+### PPO + Obstacles (50k)
 
-Random:
-Success Rate = 63%
-Average Reward = 0.63
-Average Steps = 30.55
+Success Rate: 70%
+Average Reward: 0.70
+Average Episode Length: 17.35
 
-PPO:
-Success Rate = 100%
-Average Reward = 1.00
-Average Steps = 4.26
+### PPO + Obstacles + State Augmentation (50k)
 
-Main conclusion:
+Success Rate: 87%
+Average Reward: 0.87
+Average Episode Length: 9.94
 
-PPO significantly outperforms the random baseline.
+---
+
+# Main Scientific Findings
+
+Finding 1:
+
+PPO significantly outperforms a random policy.
+
+Finding 2:
+
+The trained PPO agent generalizes well from a 5x5 environment to a larger 10x10 environment.
+
+Finding 3:
+
+Adding obstacles substantially increases task difficulty.
+
+Finding 4:
+
+Increasing training timesteps alone did not improve obstacle performance.
+
+Finding 5:
+
+Providing obstacle information in the observation space improved performance from 70% to 87%.
+
+Main Conclusion:
+
+State representation was a more important factor than simply increasing training duration.
+
+This is currently the most important scientific result obtained in the project.
 
 ---
 
@@ -237,7 +372,7 @@ miscigiacomo-sketch
 
 GitHub Desktop is configured.
 
-Basic workflow:
+Workflow:
 
 1. Edit code in VS Code
 2. Test code
@@ -247,7 +382,12 @@ Basic workflow:
 Rule:
 
 Whenever a feature works:
+
 Commit + Push
+
+Latest completed commit:
+
+Improve obstacle navigation through state augmentation
 
 ---
 
@@ -255,72 +395,60 @@ Commit + Push
 
 Current pitch:
 
-This project investigates resource collection behavior in a custom Gymnasium environment.
+This project investigates resource collection behavior in a custom Gymnasium environment using Reinforcement Learning.
 
-A PPO reinforcement learning agent is trained to locate and collect resources efficiently.
+A PPO agent is trained to locate and collect resources efficiently under increasing environmental complexity.
 
-The project serves as a foundation for future extensions toward swarm intelligence and multi-agent coordination.
+Experiments include:
 
-Current results show that PPO achieves perfect success rates while significantly outperforming a random baseline.
+* Random baseline comparison
+* Environment scaling
+* Obstacle navigation
+* State representation analysis
+
+A key finding is that providing obstacle information within the state representation significantly improves PPO performance, demonstrating the importance of observation design in reinforcement learning systems.
 
 Potential applications:
 
-- Swarm robotics
-- Warehouse automation
-- Drone coordination
-- Search and rescue
-- Distributed autonomous systems
+* Swarm robotics
+* Warehouse automation
+* Drone coordination
+* Search and rescue
+* Distributed autonomous systems
 
 ---
 
 # Roadmap
 
-## Day 5
-
-Goal:
-
-Visualization and report-quality outputs.
-
-Tasks:
-
-- Generate comparison plots
-- Generate performance figures
-- Create results folder
-- Prepare report material
-
-Potential experiment:
-
-Increase grid size:
-
-5x5 -> 10x10
-
-Evaluate PPO performance degradation.
-
----
-
-## Day 6
-
-Environment complexity.
-
-Potential additions:
-
-- Larger maps
-- Multiple food sources
-- Obstacles
-- Sparse rewards
-
----
-
 ## Day 7
 
-Multi-agent extension.
+Randomized Obstacles
 
-Potential additions:
+Goals:
 
-- Multiple agents
-- Shared resources
-- Cooperation
-- Emergent behavior
+* Generate obstacle positions randomly
+* Prevent obstacle overlap
+* Prevent food spawning inside obstacles
+* Prevent obstacle spawning on the agent
+* Evaluate PPO generalization
+
+Hypothesis:
+
+A PPO agent trained on fixed obstacles may not generalize well to randomized environments.
+
+---
+
+## Day 8
+
+Multi-Agent Extension
+
+Goals:
+
+* Two agents
+* Shared environment
+* Shared resource collection
+* Cooperation experiments
+* Scalability analysis
 
 ---
 
@@ -328,18 +456,19 @@ Potential additions:
 
 Act as:
 
-- Reinforcement Learning mentor
-- Python mentor
-- Research project supervisor
+* Reinforcement Learning mentor
+* Python mentor
+* Research project supervisor
 
 Requirements:
 
-- Explain every step before implementing it.
-- Always explain WHY a change is useful.
-- Prefer educational explanations.
-- Keep code professional and fully in English.
-- Maintain compatibility with current project structure.
-- Use GitHub best practices.
-- Focus on producing report-quality results.
+* Explain every step before implementation.
+* Always explain WHY a change is useful.
+* Prefer educational explanations.
+* Keep code professional and fully in English.
+* Maintain compatibility with the current project structure.
+* Use GitHub best practices.
+* Focus on producing report-quality results.
+* Track experiments and scientific conclusions carefully.
 
-The user is still learning RL and GitHub, so explanations should be detailed but practical.
+The user is still learning Reinforcement Learning, GitHub, and software engineering practices, so explanations should be detailed, educational, and practical.
