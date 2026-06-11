@@ -296,6 +296,38 @@ This supports the interpretation that the 76.30% success rate reflects a learned
 
 ---
 
+## Experiment 14 - PPO Policy Sampling Mode Analysis
+
+| Field | Value |
+| --- | --- |
+| Environment | 5x5 randomized reachable obstacles |
+| Evaluation Episodes | 1000 seeded episodes per action seed |
+| Action Seeds | `0, 1, 2, 3, 4, 42, 100, 123, 999, 2024` |
+| Models | `models/ppo_foraging_random_obstacles_100k.zip`, `models/ppo_foraging_random_obstacles_200k.zip` |
+| Analysis Script | `evaluation/evaluate_stochastic_policy_robustness.py` |
+| Output File | `results/policy_sampling_robustness_summary.txt` |
+
+### Results
+
+| Model | Deterministic Success | Stochastic Mean Success | Stochastic Std | Mean Average Reward | Mean Average Episode Length | Mean No-Move Steps |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| PPO Random Obstacles 100k | 76.30% | 96.92% | 0.52% | 0.97 | 7.65 | 2.80 |
+| PPO Random Obstacles 200k | 76.20% | 97.58% | 0.29% | 0.98 | 7.17 | 2.51 |
+
+### Conclusion
+
+The policy sampling analysis showed that deterministic evaluation substantially underestimated the capability of the learned PPO policy.
+
+Under deterministic action selection, both the 100k and 200k randomized-obstacle models achieved only about 76% success. This matched the earlier failure-case analysis, where failed episodes were dominated by repeated no-move behavior.
+
+When the same trained policies were evaluated using stochastic action sampling, performance improved dramatically. The 100k model achieved a mean success rate of 96.92%, while the 200k model achieved the best performance with a mean success rate of 97.58% across 10 action seeds.
+
+This suggests that the learned PPO policy contains useful action probabilities even when the deterministic argmax action can lead to repeated invalid or ineffective movements. Stochastic sampling allows the agent to escape these local failure states and reach near-oracle performance without changing the environment, reward function, or trained model.
+
+The best randomized-obstacle policy for future experiments is therefore the 200k PPO model evaluated with stochastic action sampling.
+
+---
+
 # Summary Table
 
 | Experiment                    | Training Environment     | Evaluation Environment   | Timesteps | Success Rate | Avg Reward | Avg Episode Length |
@@ -310,6 +342,8 @@ This supports the interpretation that the 76.30% success rate reflects a learned
 | PPO Random Obstacles          | 5x5 randomized obstacles | 5x5 randomized obstacles |       50k |       70.90% |       0.71 |              17.14 |
 | PPO Random Obstacles          | 5x5 randomized obstacles | 5x5 randomized obstacles |      100k |       76.30% |       0.76 |              14.74 |
 | PPO Random Obstacles          | 5x5 randomized obstacles | 5x5 randomized obstacles |      200k |       76.20% |       0.76 |              14.82 |
+| PPO Random Obstacles 100k Stochastic | 5x5 randomized obstacles | 5x5 randomized obstacles | 100k | 96.92% | 0.97 | 7.65 |
+| PPO Random Obstacles 200k Stochastic | 5x5 randomized obstacles | 5x5 randomized obstacles | 200k | 97.58% | 0.98 | 7.17 |
 | BFS Oracle                    | N/A                      | 5x5 randomized obstacles |       N/A |      100.00% |       1.00 |               4.29 |
 
 ---
@@ -324,8 +358,11 @@ This supports the interpretation that the 76.30% success rate reflects a learned
 6. A fixed-obstacle PPO policy did not fully generalize to randomized obstacle layouts.
 7. Training directly on randomized obstacles improved generalization.
 8. Increasing randomized-obstacle training from 50k to 100k further improved robustness and efficiency, but performance plateaued at 200k timesteps.
-9. The BFS oracle solved 100% of the randomized-obstacle environments, confirming that the task was solvable.
-10. PPO failure-case analysis showed that failed episodes were dominated by repeated no-move behavior, suggesting limitations of the learned policy rather than impossible environments.
+9. Deterministic evaluation suggested a plateau around 76% for randomized-obstacle PPO models.
+10. The BFS oracle solved 100% of the randomized-obstacle environments, confirming that the task was solvable.
+11. PPO failure-case analysis showed that failed deterministic episodes were dominated by repeated no-move behavior, suggesting limitations of deterministic action selection rather than impossible environments.
+12. Stochastic policy sampling greatly improved performance, reaching 96.92% for the 100k model and 97.58% for the 200k model.
+13. The 200k randomized-obstacle PPO model evaluated stochastically is the best randomized-obstacle policy so far.
 
 ---
 
@@ -339,9 +376,9 @@ Train on 5x5 randomized obstacles and evaluate on 10x10 randomized obstacles.
 
 The current best randomized-obstacle model is:
 
-`models/ppo_foraging_random_obstacles_100k.zip`
+`models/ppo_foraging_random_obstacles_200k.zip`
 
-Although the 200k model was also trained, it did not improve over the 100k model. Therefore, the 100k model remains the best randomized-obstacle policy for the next generalization experiment.
+This model should be evaluated using stochastic action sampling (`deterministic=False`). Deterministic evaluation suggested a plateau around 76%, but stochastic evaluation showed that the 200k model achieved the best randomized-obstacle performance with 97.58% mean success across action seeds.
 
 Scientific question:
 

@@ -1,0 +1,69 @@
+PPO POLICY SAMPLING ROBUSTNESS SUMMARY
+======================================
+
+PPO Random Obstacles 100k
+-------------------------
+
+Deterministic evaluation:
+Success Rate: 76.30%
+Average Reward: 0.76
+Average Episode Length: 14.74
+Failures: 237
+Average No-Move Steps: 11.48
+
+Stochastic evaluation across action seeds:
+Mean Success Rate: 96.92%
+Std Success Rate: 0.52%
+Min Success Rate: 95.90%
+Max Success Rate: 97.70%
+Mean Average Reward: 0.97
+Mean Average Episode Length: 7.65
+Mean Average No-Move Steps: 2.80
+Mean Failures: 30.80
+
+Per-action-seed stochastic results:
+Action Seed 0: Success Rate 96.20%, Average Episode Length 7.83, Failures 38, No-Move Steps 3.07
+Action Seed 1: Success Rate 97.00%, Average Episode Length 7.57, Failures 30, No-Move Steps 2.68
+Action Seed 2: Success Rate 96.90%, Average Episode Length 7.85, Failures 31, No-Move Steps 2.98
+Action Seed 3: Success Rate 97.00%, Average Episode Length 7.71, Failures 30, No-Move Steps 2.85
+Action Seed 4: Success Rate 97.60%, Average Episode Length 7.14, Failures 24, No-Move Steps 2.35
+Action Seed 42: Success Rate 95.90%, Average Episode Length 7.93, Failures 41, No-Move Steps 3.04
+Action Seed 100: Success Rate 97.70%, Average Episode Length 7.39, Failures 23, No-Move Steps 2.52
+Action Seed 123: Success Rate 96.80%, Average Episode Length 7.86, Failures 32, No-Move Steps 2.98
+Action Seed 999: Success Rate 96.90%, Average Episode Length 7.64, Failures 31, No-Move Steps 2.83
+Action Seed 2024: Success Rate 97.20%, Average Episode Length 7.56, Failures 28, No-Move Steps 2.72
+
+
+PPO Random Obstacles 200k
+-------------------------
+
+Deterministic evaluation:
+Success Rate: 76.20%
+Average Reward: 0.76
+Average Episode Length: 14.82
+Failures: 238
+Average No-Move Steps: 11.51
+
+Stochastic evaluation across action seeds:
+Mean Success Rate: 97.58%
+Std Success Rate: 0.29%
+Min Success Rate: 96.90%
+Max Success Rate: 97.90%
+Mean Average Reward: 0.98
+Mean Average Episode Length: 7.17
+Mean Average No-Move Steps: 2.51
+Mean Failures: 24.20
+
+Per-action-seed stochastic results:
+Action Seed 0: Success Rate 97.90%, Average Episode Length 6.96, Failures 21, No-Move Steps 2.29
+Action Seed 1: Success Rate 97.70%, Average Episode Length 7.03, Failures 23, No-Move Steps 2.35
+Action Seed 2: Success Rate 97.50%, Average Episode Length 7.10, Failures 25, No-Move Steps 2.44
+Action Seed 3: Success Rate 97.60%, Average Episode Length 7.50, Failures 24, No-Move Steps 2.82
+Action Seed 4: Success Rate 97.80%, Average Episode Length 6.94, Failures 22, No-Move Steps 2.28
+Action Seed 42: Success Rate 96.90%, Average Episode Length 7.52, Failures 31, No-Move Steps 2.84
+Action Seed 100: Success Rate 97.50%, Average Episode Length 7.33, Failures 25, No-Move Steps 2.67
+Action Seed 123: Success Rate 97.70%, Average Episode Length 6.97, Failures 23, No-Move Steps 2.34
+Action Seed 999: Success Rate 97.90%, Average Episode Length 7.09, Failures 21, No-Move Steps 2.41
+Action Seed 2024: Success Rate 97.30%, Average Episode Length 7.29, Failures 27, No-Move Steps 2.65
+
+

@@ -253,6 +253,34 @@ PPO failure-case analysis showed that failed episodes were dominated by repeated
 
 ---
 
+### Post-Day 9 - PPO Policy Sampling Robustness Analysis
+
+Status: completed
+
+Implemented:
+
+* deterministic vs stochastic PPO evaluation;
+* robustness evaluation across 10 stochastic action seeds;
+* comparison between 100k and 200k randomized-obstacle PPO models;
+* saved results to `results/policy_sampling_robustness_summary.txt`.
+
+Key result:
+
+| Model | Deterministic Success | Stochastic Mean Success | Stochastic Std | Mean Episode Length | Mean No-Move Steps |
+|---|---:|---:|---:|---:|---:|
+| PPO random obstacles 100k | 76.30% | 96.92% | 0.52% | 7.65 | 2.80 |
+| PPO random obstacles 200k | 76.20% | 97.58% | 0.29% | 7.17 | 2.51 |
+
+Main finding:
+
+Deterministic evaluation underestimated PPO performance because the policy could repeatedly select invalid or ineffective actions in unchanged states.
+
+Stochastic policy sampling greatly reduced no-move behavior and improved performance. The 200k randomized-obstacle PPO model achieved the best learned result so far, reaching 97.58% mean success across 10 action seeds.
+
+This result brings PPO close to the 100% BFS oracle baseline without changing the environment, reward function, or trained model.
+
+---
+
 ## Next Planned Work
 
 ## Day 10 - Random-Obstacle Grid-Size Generalization
@@ -267,9 +295,9 @@ Evaluate whether the best PPO policy trained on 5x5 randomized obstacles general
 
 The current best randomized-obstacle model is:
 
-`models/ppo_foraging_random_obstacles_100k.zip`
+`models/ppo_foraging_random_obstacles_200k.zip`
 
-Although a 200k model was trained, it did not improve over the 100k model. Therefore, the 100k model remains the best policy for the next generalization experiment.
+This model should be evaluated using stochastic action sampling (`deterministic=False`). Deterministic evaluation suggested that the 100k and 200k models were similar, but stochastic robustness analysis showed that the 200k model achieved the best learned performance with 97.58% mean success.
 
 ### Scientific Question
 
@@ -298,8 +326,8 @@ The number of obstacles should remain fixed at 3, because the observation space 
 ### Planned Tasks
 
 1. Create an evaluation script for 10x10 randomized obstacles.
-2. Load the best randomized-obstacle model: `models/ppo_foraging_random_obstacles_100k.zip`.
-3. Evaluate over 1000 seeded randomized environments.
+2. Load the best randomized-obstacle model: `models/ppo_foraging_random_obstacles_200k.zip`.
+3. Evaluate over 1000 seeded randomized environments using stochastic action sampling (`deterministic=False`).
 4. Compare performance against the 5x5 randomized-obstacle evaluation.
 5. Record results in `EXPERIMENT_LOG.md`.
 6. Update `PROJECT_CONTEXT.md` and `ROADMAP.md`.
@@ -452,6 +480,7 @@ The final report should include:
 * Completed 200k randomized-obstacle training sensitivity analysis.
 * Added BFS oracle baseline for environment solvability validation.
 * Added PPO failure-case analysis for learned-behavior interpretation.
+* Added policy sampling robustness analysis showing near-oracle stochastic PPO performance.
 
 ### Strongly Recommended
 
@@ -478,13 +507,13 @@ Best fixed-obstacle model:
 
 Best randomized-obstacle model:
 
-`models/ppo_foraging_random_obstacles_100k.zip`
-
-Additional randomized-obstacle sensitivity model:
-
 `models/ppo_foraging_random_obstacles_200k.zip`
 
-The 200k model was useful for sensitivity analysis, but it did not improve over the 100k model.
+Recommended evaluation mode:
+
+`deterministic=False`
+
+Under deterministic evaluation, the 100k and 200k models both achieved about 76% success. Under stochastic evaluation, the 200k model achieved 97.58% mean success and is therefore the best randomized-obstacle policy for the next experiments.
 
 ---
 
@@ -494,10 +523,10 @@ The current results show that state representation and environment randomization
 
 Adding obstacle coordinates to the observation space improved fixed-obstacle performance from 70% to 87%.
 
-Randomized obstacle training improved generalization from 65.50% to 76.30%, and reduced the average episode length from 19.59 to 14.74 steps.
+Randomized obstacle training improved deterministic generalization from 65.50% to 76.30%, and reduced the average episode length from 19.59 to 14.74 steps.
 
-Increasing randomized-obstacle training from 100k to 200k did not improve performance, suggesting that the current PPO setup reaches a plateau around 100k timesteps under the sparse reward and observation design.
+Deterministic evaluation of the 100k and 200k randomized-obstacle models initially suggested a performance plateau around 76%. However, the BFS oracle achieved 100% success on the same environments, confirming that the task was fully solvable. Failure-case analysis then showed that deterministic PPO failures were dominated by repeated no-move behavior.
 
-The BFS oracle achieved 100% success on the same randomized-obstacle environments, confirming that the evaluation environments were solvable. Failure-case analysis showed that PPO failures were dominated by repeated no-move behavior, suggesting that the model sometimes becomes trapped in ineffective deterministic actions rather than failing because of impossible task configurations.
+Policy sampling analysis showed that stochastic action selection greatly reduced this failure mode. The 200k randomized-obstacle PPO model reached 97.58% mean success across 10 action seeds, close to the 100% BFS oracle baseline.
 
-Further work will test whether larger-grid evaluation and multi-agent extensions improve robustness and scalability.
+Further work will test whether this stochastic PPO policy generalizes to larger randomized-obstacle grids and whether multi-agent extensions improve robustness and scalability.
