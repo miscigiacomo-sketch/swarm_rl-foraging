@@ -281,69 +281,48 @@ This result brings PPO close to the 100% BFS oracle baseline without changing th
 
 ---
 
-## Next Planned Work
+### Day 10 - Random-Obstacle Grid-Size Generalization
 
-## Day 10 - Random-Obstacle Grid-Size Generalization
+Status: completed
 
-Status: next
+Implemented:
 
-### Goal
+* evaluation of the best randomized-obstacle PPO model on 5x5 and 10x10 randomized-obstacle environments;
+* BFS oracle validation on both grid sizes;
+* deterministic PPO evaluation;
+* stochastic PPO evaluation across 10 action seeds;
+* saved results to `results/random_obstacle_grid_generalization_summary.txt`.
 
-Evaluate whether the best PPO policy trained on 5x5 randomized obstacles generalizes to a larger 10x10 randomized-obstacle environment.
-
-### Selected Model
-
-The current best randomized-obstacle model is:
+Model:
 
 `models/ppo_foraging_random_obstacles_200k.zip`
 
-This model should be evaluated using stochastic action sampling (`deterministic=False`). Deterministic evaluation suggested that the 100k and 200k models were similar, but stochastic robustness analysis showed that the 200k model achieved the best learned performance with 97.58% mean success.
+Recommended evaluation mode:
 
-### Scientific Question
+`deterministic=False`
 
-Does a PPO agent trained on randomized 5x5 obstacle layouts generalize to a larger 10x10 grid with randomized obstacles?
+Key result:
 
-### Planned Setup
+| Grid | Oracle Success | PPO Deterministic Success | PPO Stochastic Mean Success | Stochastic Std | PPO Stochastic Avg Length |
+|---|---:|---:|---:|---:|---:|
+| 5x5 | 100.00% | 76.20% | 97.58% | 0.29% | 7.17 |
+| 10x10 | 100.00% | 66.90% | 98.08% | 0.19% | 12.60 |
 
-Training environment:
+Main finding:
 
-* 5x5 grid;
-* randomized reachable obstacles;
-* 3 obstacles;
-* sparse reward.
+The stochastic PPO policy trained on 5x5 randomized obstacles generalized successfully to the larger 10x10 randomized-obstacle environment.
 
-Evaluation environment:
+The 10x10 grid required longer paths, increasing the average stochastic PPO episode length from 7.17 to 12.60 steps. However, the success rate remained near-oracle, reaching 98.08% on 10x10.
 
-* 10x10 grid;
-* randomized reachable obstacles;
-* 3 obstacles;
-* same observation size.
-
-Important note:
-
-The number of obstacles should remain fixed at 3, because the observation space includes obstacle coordinates. Changing the number of obstacles would change the observation dimension and would not be compatible with the already trained PPO model.
-
-### Planned Tasks
-
-1. Create an evaluation script for 10x10 randomized obstacles.
-2. Load the best randomized-obstacle model: `models/ppo_foraging_random_obstacles_200k.zip`.
-3. Evaluate over 1000 seeded randomized environments using stochastic action sampling (`deterministic=False`).
-4. Compare performance against the 5x5 randomized-obstacle evaluation.
-5. Record results in `EXPERIMENT_LOG.md`.
-6. Update `PROJECT_CONTEXT.md` and `ROADMAP.md`.
-7. Commit and push the completed experiment.
-
-### Expected Outcome
-
-Performance may decrease due to the larger grid and longer required paths.
-
-This experiment extends the earlier grid-size generalization study to the more complex randomized-obstacle setting.
+This suggests that, with stochastic action sampling, the learned PPO policy transferred well to a larger grid when the obstacle count and observation structure remained compatible with the trained model.
 
 ---
 
+## Next Planned Work
+
 ## Day 11 - Multi-Agent Environment
 
-Status: planned
+Status: next
 
 ### Goal
 
@@ -469,7 +448,6 @@ The final report should include:
 
 ### Essential
 
-* Complete random-obstacle 10x10 generalization.
 * Implement a working 2-agent environment.
 * Compare multi-agent PPO against a random baseline.
 * Generate final plots and summary tables.
@@ -481,6 +459,7 @@ The final report should include:
 * Added BFS oracle baseline for environment solvability validation.
 * Added PPO failure-case analysis for learned-behavior interpretation.
 * Added policy sampling robustness analysis showing near-oracle stochastic PPO performance.
+* Completed random-obstacle 10x10 generalization with near-oracle stochastic PPO performance.
 
 ### Strongly Recommended
 
@@ -513,13 +492,13 @@ Recommended evaluation mode:
 
 `deterministic=False`
 
-Under deterministic evaluation, the 100k and 200k models both achieved about 76% success. Under stochastic evaluation, the 200k model achieved 97.58% mean success and is therefore the best randomized-obstacle policy for the next experiments.
+Under deterministic evaluation, the 100k and 200k models both achieved about 76% success. Under stochastic evaluation, the 200k model achieved 97.58% mean success on 5x5 and 98.08% mean success on 10x10, making it the best randomized-obstacle policy so far.
 
 ---
 
 ## Current Main Conclusion
 
-The current results show that state representation and environment randomization both play important roles in PPO performance.
+The current results show that state representation, environment randomization, policy deployment mode, and grid-size scaling all affect PPO performance.
 
 Adding obstacle coordinates to the observation space improved fixed-obstacle performance from 70% to 87%.
 
@@ -527,6 +506,8 @@ Randomized obstacle training improved deterministic generalization from 65.50% t
 
 Deterministic evaluation of the 100k and 200k randomized-obstacle models initially suggested a performance plateau around 76%. However, the BFS oracle achieved 100% success on the same environments, confirming that the task was fully solvable. Failure-case analysis then showed that deterministic PPO failures were dominated by repeated no-move behavior.
 
-Policy sampling analysis showed that stochastic action selection greatly reduced this failure mode. The 200k randomized-obstacle PPO model reached 97.58% mean success across 10 action seeds, close to the 100% BFS oracle baseline.
+Policy sampling analysis showed that stochastic action selection greatly reduced this failure mode. The 200k randomized-obstacle PPO model reached 97.58% mean success across 10 action seeds on 5x5, close to the 100% BFS oracle baseline.
 
-Further work will test whether this stochastic PPO policy generalizes to larger randomized-obstacle grids and whether multi-agent extensions improve robustness and scalability.
+Random-obstacle grid-size generalization showed that the same 200k stochastic PPO policy transferred successfully to 10x10 randomized obstacles, achieving 98.08% mean success. The larger grid increased the average episode length from 7.17 to 12.60 steps, but did not reduce the success rate.
+
+Further work will test whether multi-agent extensions improve foraging efficiency and scalability.

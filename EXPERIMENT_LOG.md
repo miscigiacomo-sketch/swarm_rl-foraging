@@ -239,7 +239,7 @@ Increasing randomized-obstacle training from 100k to 200k timesteps did not prod
 
 The 100k model achieved a success rate of 76.30%, while the 200k model achieved 76.20%. The average episode length also remained almost unchanged, increasing slightly from 14.74 to 14.82 steps.
 
-This suggests that, under the current sparse reward function and observation design, performance reaches a plateau around 100k timesteps. Further improvements may require changes such as reward shaping, different hyperparameters, curriculum learning, or a modified observation/action design.
+This suggests that, under deterministic action selection, performance appears to reach a plateau around 100k timesteps. Later policy-sampling analysis showed that the learned policy performs much better when evaluated stochastically, indicating that deterministic action selection can underestimate PPO performance in this environment.
 
 ---
 
@@ -328,6 +328,37 @@ The best randomized-obstacle policy for future experiments is therefore the 200k
 
 ---
 
+## Experiment 15 - Random-Obstacle Grid-Size Generalization
+
+| Field | Value |
+| --- | --- |
+| Training Environment | 5x5 randomized reachable obstacles |
+| Evaluation Environments | 5x5 and 10x10 randomized reachable obstacles |
+| Model | `models/ppo_foraging_random_obstacles_200k.zip` |
+| Evaluation Episodes | 1000 seeded episodes |
+| Stochastic Action Seeds | `0, 1, 2, 3, 4, 42, 100, 123, 999, 2024` |
+| Evaluation Script | `evaluation/evaluate_random_obstacle_grid_generalization.py` |
+| Output File | `results/random_obstacle_grid_generalization_summary.txt` |
+
+### Results
+
+| Grid | Oracle Success | PPO Deterministic Success | PPO Stochastic Mean Success | Stochastic Std | PPO Stochastic Average Episode Length |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| 5x5 | 100.00% | 76.20% | 97.58% | 0.29% | 7.17 |
+| 10x10 | 100.00% | 66.90% | 98.08% | 0.19% | 12.60 |
+
+### Conclusion
+
+The stochastic PPO policy trained on 5x5 randomized obstacles generalized successfully to a larger 10x10 randomized-obstacle environment.
+
+The BFS oracle achieved 100% success on both grid sizes, confirming that both evaluation settings were solvable. The PPO policy also achieved near-oracle success under stochastic action sampling, reaching 97.58% on 5x5 and 98.08% on 10x10.
+
+The average episode length increased from 7.17 steps on 5x5 to 12.60 steps on 10x10, which is expected because the larger grid requires longer paths on average. However, the success rate remained high, showing that the learned stochastic policy transferred well to the larger grid.
+
+The deterministic evaluation remained weaker, especially on the 10x10 grid, where success dropped to 66.90%. This supports the earlier conclusion that deterministic action selection is vulnerable to repeated no-move behavior, while stochastic action sampling better reflects the useful action distribution learned by PPO.
+
+---
+
 # Summary Table
 
 | Experiment                    | Training Environment     | Evaluation Environment   | Timesteps | Success Rate | Avg Reward | Avg Episode Length |
@@ -345,6 +376,8 @@ The best randomized-obstacle policy for future experiments is therefore the 200k
 | PPO Random Obstacles 100k Stochastic | 5x5 randomized obstacles | 5x5 randomized obstacles | 100k | 96.92% | 0.97 | 7.65 |
 | PPO Random Obstacles 200k Stochastic | 5x5 randomized obstacles | 5x5 randomized obstacles | 200k | 97.58% | 0.98 | 7.17 |
 | BFS Oracle                    | N/A                      | 5x5 randomized obstacles |       N/A |      100.00% |       1.00 |               4.29 |
+| PPO Random Obstacles 200k Stochastic | 5x5 randomized obstacles | 10x10 randomized obstacles | 200k | 98.08% | 0.98 | 12.60 |
+| BFS Oracle                    | N/A                      | 10x10 randomized obstacles |       N/A |      100.00% |       1.00 |               N/A |
 
 ---
 
@@ -357,34 +390,17 @@ The best randomized-obstacle policy for future experiments is therefore the 200k
 5. Adding obstacle information to the observation space improved fixed-obstacle performance from 70% to 87%.
 6. A fixed-obstacle PPO policy did not fully generalize to randomized obstacle layouts.
 7. Training directly on randomized obstacles improved generalization.
-8. Increasing randomized-obstacle training from 50k to 100k further improved robustness and efficiency, but performance plateaued at 200k timesteps.
-9. Deterministic evaluation suggested a plateau around 76% for randomized-obstacle PPO models.
-10. The BFS oracle solved 100% of the randomized-obstacle environments, confirming that the task was solvable.
-11. PPO failure-case analysis showed that failed deterministic episodes were dominated by repeated no-move behavior, suggesting limitations of deterministic action selection rather than impossible environments.
-12. Stochastic policy sampling greatly improved performance, reaching 96.92% for the 100k model and 97.58% for the 200k model.
-13. The 200k randomized-obstacle PPO model evaluated stochastically is the best randomized-obstacle policy so far.
+8. Increasing randomized-obstacle training from 50k to 100k further improved robustness and efficiency under deterministic evaluation, but deterministic performance plateaued around 76% at 200k timesteps.
+9. The BFS oracle solved 100% of the randomized-obstacle environments, confirming that the task was solvable.
+10. PPO failure-case analysis showed that failed deterministic episodes were dominated by repeated no-move behavior, suggesting limitations of deterministic action selection rather than impossible environments.
+11. Stochastic policy sampling greatly improved performance, reaching 96.92% for the 100k model and 97.58% for the 200k model.
+12. The 200k randomized-obstacle PPO model evaluated stochastically is the best randomized-obstacle policy so far.
+13. Random-obstacle grid-size generalization was successful: the 200k stochastic PPO policy achieved 97.58% success on 5x5 and 98.08% success on 10x10.
+14. The 10x10 randomized-obstacle environment required longer paths, increasing the stochastic PPO average episode length from 7.17 to 12.60 steps, but the success rate remained near-oracle.
 
 ---
 
 # Next Experiments
-
-## Random-Obstacle Grid-Size Generalization
-
-Planned evaluation:
-
-Train on 5x5 randomized obstacles and evaluate on 10x10 randomized obstacles.
-
-The current best randomized-obstacle model is:
-
-`models/ppo_foraging_random_obstacles_200k.zip`
-
-This model should be evaluated using stochastic action sampling (`deterministic=False`). Deterministic evaluation suggested a plateau around 76%, but stochastic evaluation showed that the 200k model achieved the best randomized-obstacle performance with 97.58% mean success across action seeds.
-
-Scientific question:
-
-Does the randomized-obstacle PPO policy generalize to a larger grid?
-
----
 
 ## Multi-Agent Extension
 

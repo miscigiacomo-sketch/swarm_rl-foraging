@@ -1,0 +1,53 @@
+RANDOM OBSTACLE GRID-SIZE GENERALIZATION
+========================================
+
+Grid Size: 5x5
+------------------------------
+
+BFS Oracle:
+Success Rate: 100.00%
+Average Shortest Path Length: 4.29
+Failed Seeds: []
+
+PPO Deterministic:
+Success Rate: 76.20%
+Average Reward: 0.76
+Average Episode Length: 14.82
+Failures: 238
+Average No-Move Steps: 11.51
+
+PPO Stochastic Summary:
+Mean Success Rate: 97.58%
+Std Success Rate: 0.29%
+Min Success Rate: 96.90%
+Max Success Rate: 97.90%
+Mean Average Reward: 0.98
+Mean Average Episode Length: 7.17
+Mean No-Move Steps: 2.51
+Mean Failures: 24.20
+
+Grid Size: 10x10
+------------------------------
+
+BFS Oracle:
+Success Rate: 100.00%
+Average Shortest Path Length: 8.97
+Failed Seeds: []
+
+PPO Deterministic:
+Success Rate: 66.90%
+Average Reward: 0.67
+Average Episode Length: 22.12
+Failures: 331
+Average No-Move Steps: 8.35
+
+PPO Stochastic Summary:
+Mean Success Rate: 98.08%
+Std Success Rate: 0.19%
+Min Success Rate: 97.70%
+Max Success Rate: 98.30%
+Mean Average Reward: 0.98
+Mean Average Episode Length: 12.60
+Mean No-Move Steps: 1.50
+Mean Failures: 19.20
+
