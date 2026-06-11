@@ -182,50 +182,61 @@ Key result:
 
 Main finding:
 
-Training directly on randomized obstacles improves generalization, and longer training improves robustness and efficiency.
+Training directly on randomized obstacles improves generalization, and increasing training from 50k to 100k improves robustness and efficiency.
+
+---
+
+### Day 9 - Randomized Obstacle PPO 200k
+
+Status: completed
+
+Implemented:
+
+* 200k PPO training on randomized reachable obstacle environments;
+* separate 200k randomized-obstacle model;
+* updated seeded comparison script;
+* controlled comparison between fixed-obstacle, 50k, 100k, and 200k models on the same 1000 seeded randomized environments.
+
+Model:
+
+`models/ppo_foraging_random_obstacles_200k.zip`
+
+Key result:
+
+| Model                                   | Success Rate | Average Reward | Average Steps |
+| --------------------------------------- | -----------: | -------------: | ------------: |
+| PPO fixed obstacles on random obstacles |       65.50% |           0.66 |         19.59 |
+| PPO random obstacles 50k                |       70.90% |           0.71 |         17.14 |
+| PPO random obstacles 100k               |       76.30% |           0.76 |         14.74 |
+| PPO random obstacles 200k               |       76.20% |           0.76 |         14.82 |
+
+Main finding:
+
+Increasing randomized-obstacle training from 100k to 200k timesteps did not produce a meaningful improvement.
+
+The 100k model achieved a success rate of 76.30%, while the 200k model achieved 76.20%. The average episode length also remained almost unchanged.
+
+This suggests that, under the current sparse reward function and observation design, the randomized-obstacle PPO policy reaches a performance plateau around 100k timesteps.
 
 ---
 
 ## Next Planned Work
 
-## Day 9 - Randomized Obstacle PPO 200k
+## Day 10 - Random-Obstacle Grid-Size Generalization
 
 Status: next
 
 ### Goal
 
-Train PPO on randomized reachable obstacle environments for 200k timesteps.
+Evaluate whether the best PPO policy trained on 5x5 randomized obstacles generalizes to a larger 10x10 randomized-obstacle environment.
 
-### Planned model
+### Selected Model
 
-`models/ppo_foraging_random_obstacles_200k.zip`
+The current best randomized-obstacle model is:
 
-### Scientific Question
+`models/ppo_foraging_random_obstacles_100k.zip`
 
-Does increasing training duration from 100k to 200k further improve robustness in randomized obstacle environments?
-
-### Planned Tasks
-
-1. Create `train/train_ppo_random_obstacles_200k.py`.
-2. Train PPO for 200k timesteps.
-3. Save the model separately.
-4. Update `evaluation/compare_random_obstacle_generalization.py`.
-5. Compare fixed-obstacle, 50k, 100k, and 200k models on the same 1000 seeded randomized environments.
-6. Record results in `EXPERIMENT_LOG.md`.
-
-### Expected Outcome
-
-The 200k model may improve over the 100k model. If performance improves clearly, this supports the conclusion that longer training improves robustness. If performance saturates, this suggests that further improvements may require reward shaping, architecture changes, or different training strategies.
-
----
-
-## Day 10 - Random-Obstacle Grid-Size Generalization
-
-Status: planned
-
-### Goal
-
-Evaluate whether a PPO policy trained on 5x5 randomized obstacles generalizes to a larger 10x10 randomized-obstacle environment.
+Although a 200k model was trained, it did not improve over the 100k model. Therefore, the 100k model remains the best policy for the next generalization experiment.
 
 ### Scientific Question
 
@@ -247,17 +258,25 @@ Evaluation environment:
 * 3 obstacles;
 * same observation size.
 
+Important note:
+
+The number of obstacles should remain fixed at 3, because the observation space includes obstacle coordinates. Changing the number of obstacles would change the observation dimension and would not be compatible with the already trained PPO model.
+
 ### Planned Tasks
 
-1. Select the best randomized-obstacle model.
-2. Create an evaluation script for 10x10 randomized obstacles.
-3. Evaluate over a fixed number of episodes.
+1. Create an evaluation script for 10x10 randomized obstacles.
+2. Load the best randomized-obstacle model: `models/ppo_foraging_random_obstacles_100k.zip`.
+3. Evaluate over 1000 seeded randomized environments.
 4. Compare performance against the 5x5 randomized-obstacle evaluation.
-5. Save results and update plots.
+5. Record results in `EXPERIMENT_LOG.md`.
+6. Update `PROJECT_CONTEXT.md` and `ROADMAP.md`.
+7. Commit and push the completed experiment.
 
 ### Expected Outcome
 
-Performance may decrease due to the larger grid and longer required paths. This experiment extends the earlier grid-size generalization study to the more complex randomized-obstacle setting.
+Performance may decrease due to the larger grid and longer required paths.
+
+This experiment extends the earlier grid-size generalization study to the more complex randomized-obstacle setting.
 
 ---
 
@@ -388,7 +407,6 @@ The final report should include:
 
 ### Essential
 
-* Complete 200k randomized-obstacle training.
 * Complete random-obstacle 10x10 generalization.
 * Implement a working 2-agent environment.
 * Compare multi-agent PPO against a random baseline.
@@ -417,13 +435,15 @@ Best fixed-obstacle model:
 
 `models/ppo_foraging_obstacles_state.zip`
 
-Best randomized-obstacle model so far:
+Best randomized-obstacle model:
 
 `models/ppo_foraging_random_obstacles_100k.zip`
 
-Planned next model:
+Additional randomized-obstacle sensitivity model:
 
 `models/ppo_foraging_random_obstacles_200k.zip`
+
+The 200k model was useful for sensitivity analysis, but it did not improve over the 100k model.
 
 ---
 
@@ -431,6 +451,10 @@ Planned next model:
 
 The current results show that state representation and environment randomization both play important roles in PPO performance.
 
+Adding obstacle coordinates to the observation space improved fixed-obstacle performance from 70% to 87%.
+
 Randomized obstacle training improved generalization from 65.50% to 76.30%, and reduced the average episode length from 19.59 to 14.74 steps.
 
-Further work will test whether additional training, larger-grid evaluation, and multi-agent extensions improve robustness and scalability.
+Increasing randomized-obstacle training from 100k to 200k did not improve performance, suggesting that the current PPO setup reaches a plateau around 100k timesteps under the sparse reward and observation design.
+
+Further work will test whether larger-grid evaluation and multi-agent extensions improve robustness and scalability.

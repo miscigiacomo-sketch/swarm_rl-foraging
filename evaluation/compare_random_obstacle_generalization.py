@@ -57,6 +57,7 @@ def main():
     fixed_obstacle_model = PPO.load("models/ppo_foraging_obstacles_state.zip")
     random_obstacle_model_50k = PPO.load("models/ppo_foraging_random_obstacles.zip")
     random_obstacle_model_100k = PPO.load("models/ppo_foraging_random_obstacles_100k.zip")
+    random_obstacle_model_200k = PPO.load("models/ppo_foraging_random_obstacles_200k.zip")
 
     fixed_results = evaluate_model_on_seeded_episodes(
         model=fixed_obstacle_model,
@@ -72,6 +73,12 @@ def main():
 
     random_100k_results = evaluate_model_on_seeded_episodes(
         model=random_obstacle_model_100k,
+        seeds=seeds,
+        episodes=episodes,
+    )
+
+    random_200k_results = evaluate_model_on_seeded_episodes(
+        model=random_obstacle_model_200k,
         seeds=seeds,
         episodes=episodes,
     )
@@ -93,6 +100,11 @@ def main():
     print_results(
         "Random-obstacle PPO 100k evaluated on randomized obstacles:",
         random_100k_results,
+    )
+
+    print_results(
+        "Random-obstacle PPO 200k evaluated on randomized obstacles:",
+        random_200k_results,
     )
 
 

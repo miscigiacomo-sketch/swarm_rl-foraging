@@ -37,7 +37,14 @@ Day 5: COMPLETED
 Day 6: COMPLETED
 Day 7: COMPLETED
 Day 8: COMPLETED
-Day 9: NEXT
+Day 9: COMPLETED
+Day 10: NEXT
+```
+
+Current next step:
+
+```text
+Day 10 - Random-obstacle grid-size generalization
 ```
 
 ---
@@ -78,7 +85,8 @@ swarm_rl/
 │   ├── train_ppo.py
 │   ├── train_ppo_obstacles.py
 │   ├── train_ppo_random_obstacles.py
-│   └── train_ppo_random_obstacles_100k.py
+│   ├── train_ppo_random_obstacles_100k.py
+│   └── train_ppo_random_obstacles_200k.py
 │
 ├── evaluation/
 │   ├── test_trained_agent.py
@@ -99,7 +107,8 @@ swarm_rl/
 │   ├── ppo_foraging_obstacles_50k.zip
 │   ├── ppo_foraging_obstacles_state.zip
 │   ├── ppo_foraging_random_obstacles.zip
-│   └── ppo_foraging_random_obstacles_100k.zip
+│   ├── ppo_foraging_random_obstacles_100k.zip
+│   └── ppo_foraging_random_obstacles_200k.zip
 │
 ├── results/
 │   ├── success_rate_comparison.png
@@ -112,7 +121,9 @@ swarm_rl/
 │
 ├── README.md
 ├── requirements.txt
-└── PROJECT_CONTEXT.md
+├── PROJECT_CONTEXT.md
+├── EXPERIMENT_LOG.md
+└── ROADMAP.md
 ```
 
 ---
@@ -424,6 +435,39 @@ Increasing training duration from 50k to 100k further improves both success rate
 
 ---
 
+### Day 9 - Randomized Obstacles PPO 200k
+
+Implemented:
+
+* 200k PPO training on randomized reachable obstacle environments;
+* new 200k randomized-obstacle model;
+* updated seeded comparison including fixed-obstacle, 50k, 100k, and 200k models.
+
+Model:
+
+```text
+models/ppo_foraging_random_obstacles_200k.zip
+```
+
+Final comparison:
+
+| Model                     | Training Environment | Evaluation Environment | Success Rate | Average Reward | Average Episode Length |
+| ------------------------- | -------------------- | ---------------------- | -----------: | -------------: | ---------------------: |
+| PPO fixed obstacles       | Fixed obstacles      | Random obstacles       |       65.50% |           0.66 |                  19.59 |
+| PPO random obstacles 50k  | Random obstacles     | Random obstacles       |       70.90% |           0.71 |                  17.14 |
+| PPO random obstacles 100k | Random obstacles     | Random obstacles       |       76.30% |           0.76 |                  14.74 |
+| PPO random obstacles 200k | Random obstacles     | Random obstacles       |       76.20% |           0.76 |                  14.82 |
+
+Conclusion:
+
+Increasing randomized-obstacle training from 100k to 200k timesteps did not produce a meaningful improvement.
+
+The 100k model achieved a success rate of 76.30%, while the 200k model achieved 76.20%. The average episode length also remained almost unchanged.
+
+This suggests that, under the current sparse reward function and observation design, the randomized-obstacle PPO policy reaches a performance plateau around 100k timesteps.
+
+---
+
 ## Main Scientific Findings So Far
 
 1. PPO significantly outperforms a random policy in the basic foraging task.
@@ -433,7 +477,8 @@ Increasing training duration from 50k to 100k further improves both success rate
 5. Adding obstacle information to the observation space improved fixed-obstacle performance from 70% to 87%.
 6. A PPO policy trained only on fixed obstacles does not fully generalize to randomized obstacle layouts.
 7. Training PPO directly on randomized obstacles improves generalization.
-8. Longer training on randomized obstacles improves robustness and efficiency.
+8. Increasing randomized-obstacle training from 50k to 100k improves robustness and efficiency.
+9. Increasing randomized-obstacle training from 100k to 200k does not improve performance, suggesting a plateau under the current setup.
 
 ---
 
@@ -445,11 +490,13 @@ Best fixed-obstacle model:
 models/ppo_foraging_obstacles_state.zip
 ```
 
-Best randomized-obstacle model so far:
+Best randomized-obstacle model:
 
 ```text
 models/ppo_foraging_random_obstacles_100k.zip
 ```
+
+Although a 200k randomized-obstacle model was trained, it did not improve over the 100k model.
 
 ---
 
@@ -473,36 +520,28 @@ simple foraging
 Current key message:
 
 ```text
-State representation and environment randomization both play important roles in reinforcement learning generalization and robustness.
+State representation and environment randomization both play important roles in reinforcement learning generalization and robustness. However, simply increasing training duration does not guarantee continuous improvement, as the randomized-obstacle policy plateaued after 100k timesteps.
 ```
 
 ---
 
 ## Next Planned Steps
 
-### Day 9 - Randomized Obstacle Training Sensitivity: 200k
-
-Goal:
-
-Train PPO on randomized obstacles for 200k timesteps.
-
-Planned model:
-
-```text
-models/ppo_foraging_random_obstacles_200k.zip
-```
-
-Scientific question:
-
-Does longer training further improve robustness in randomized obstacle environments?
-
----
-
 ### Day 10 - Random-Obstacle Grid-Size Generalization
 
 Goal:
 
 Evaluate the best randomized-obstacle PPO model trained on 5x5 in a larger 10x10 randomized obstacle environment.
+
+Current best randomized-obstacle model:
+
+```text
+models/ppo_foraging_random_obstacles_100k.zip
+```
+
+Important note:
+
+The number of obstacles should remain fixed at 3, because the observation space includes obstacle coordinates. Changing the number of obstacles would change the observation dimension and would not be compatible with the already trained PPO model.
 
 Scientific question:
 
@@ -581,5 +620,5 @@ Commit + Push
 Latest completed block:
 
 ```text
-Train PPO on randomized obstacles for 100k timesteps
+Add 200k randomized obstacle sensitivity experiment
 ```

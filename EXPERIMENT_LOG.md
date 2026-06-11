@@ -219,6 +219,30 @@ The success rate increased from 70.90% to 76.30%, while the average episode leng
 
 ---
 
+## Experiment 11 - Randomized Obstacles PPO 200k
+
+| Field                  | Value                                           |
+| ---------------------- | ----------------------------------------------- |
+| Training Environment   | Randomized reachable obstacles                  |
+| Evaluation Environment | Randomized reachable obstacles                  |
+| Algorithm              | PPO                                             |
+| Training Timesteps     | 200,000                                         |
+| Model                  | `models/ppo_foraging_random_obstacles_200k.zip` |
+| Evaluation Episodes    | 1000 seeded episodes                            |
+| Success Rate           | 76.20%                                          |
+| Average Reward         | 0.76                                            |
+| Average Episode Length | 14.82                                           |
+
+### Conclusion
+
+Increasing randomized-obstacle training from 100k to 200k timesteps did not produce a meaningful improvement.
+
+The 100k model achieved a success rate of 76.30%, while the 200k model achieved 76.20%. The average episode length also remained almost unchanged, increasing slightly from 14.74 to 14.82 steps.
+
+This suggests that, under the current sparse reward function and observation design, performance reaches a plateau around 100k timesteps. Further improvements may require changes such as reward shaping, different hyperparameters, curriculum learning, or a modified observation/action design.
+
+---
+
 # Summary Table
 
 | Experiment                    | Training Environment     | Evaluation Environment   | Timesteps | Success Rate | Avg Reward | Avg Episode Length |
@@ -232,6 +256,7 @@ The success rate increased from 70.90% to 76.30%, while the average episode leng
 | Fixed PPO on Random Obstacles | 5x5 fixed obstacles      | 5x5 randomized obstacles |       50k |       65.50% |       0.66 |              19.59 |
 | PPO Random Obstacles          | 5x5 randomized obstacles | 5x5 randomized obstacles |       50k |       70.90% |       0.71 |              17.14 |
 | PPO Random Obstacles          | 5x5 randomized obstacles | 5x5 randomized obstacles |      100k |       76.30% |       0.76 |              14.74 |
+| PPO Random Obstacles          | 5x5 randomized obstacles | 5x5 randomized obstacles |      200k |       76.20% |       0.76 |              14.82 |
 
 ---
 
@@ -244,29 +269,23 @@ The success rate increased from 70.90% to 76.30%, while the average episode leng
 5. Adding obstacle information to the observation space improved fixed-obstacle performance from 70% to 87%.
 6. A fixed-obstacle PPO policy did not fully generalize to randomized obstacle layouts.
 7. Training directly on randomized obstacles improved generalization.
-8. Increasing randomized-obstacle training from 50k to 100k further improved robustness and efficiency.
+8. Increasing randomized-obstacle training from 50k to 100k further improved robustness and efficiency, but performance plateaued at 200k timesteps.
 
 ---
 
 # Next Experiments
-
-## Randomized Obstacles PPO 200k
-
-Planned model:
-
-`models/ppo_foraging_random_obstacles_200k.zip`
-
-Scientific question:
-
-Does longer training further improve robustness in randomized obstacle environments?
-
----
 
 ## Random-Obstacle Grid-Size Generalization
 
 Planned evaluation:
 
 Train on 5x5 randomized obstacles and evaluate on 10x10 randomized obstacles.
+
+The current best randomized-obstacle model is:
+
+`models/ppo_foraging_random_obstacles_100k.zip`
+
+Although the 200k model was also trained, it did not improve over the 100k model. Therefore, the 100k model remains the best randomized-obstacle policy for the next generalization experiment.
 
 Scientific question:
 
@@ -286,3 +305,4 @@ Planned setup:
 Scientific question:
 
 Does adding multiple agents improve foraging efficiency?
+
