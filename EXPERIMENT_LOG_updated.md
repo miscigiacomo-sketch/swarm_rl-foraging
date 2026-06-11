@@ -243,6 +243,59 @@ This suggests that, under the current sparse reward function and observation des
 
 ---
 
+## Experiment 12 - BFS Oracle Baseline on Randomized Obstacles
+
+| Field                        | Value                                     |
+| ---------------------------- | ----------------------------------------- |
+| Environment                  | 5x5 randomized reachable obstacles        |
+| Agent Type                   | BFS oracle / shortest-path planner        |
+| Learning Algorithm           | None                                      |
+| Evaluation Episodes          | 1000 seeded episodes                      |
+| Success Rate                 | 100.00%                                   |
+| Average Reward               | 1.00                                      |
+| Average Shortest Path Length | 4.29                                      |
+| Average Episode Length       | 4.29                                      |
+| Failed Seeds                 | `[]`                                      |
+| Evaluation Script            | `evaluation/evaluate_oracle_random_obstacles.py` |
+
+### Conclusion
+
+The BFS oracle solved 100% of the randomized-obstacle environments.
+
+This confirms that the randomized environments used for evaluation were solvable and that the food was reachable in every tested episode. Therefore, PPO failures are not caused by impossible environments, but by limitations of the learned policy under the current sparse reward and observation design.
+
+The oracle also provides an upper-bound reference for efficiency. On the same 5x5 randomized-obstacle setting, the oracle required an average shortest path length of 4.29 steps, while the best PPO randomized-obstacle model required 14.74 steps on average.
+
+---
+
+## Experiment 13 - PPO Failure-Case Analysis on Randomized Obstacles
+
+| Field                                      | Value                                             |
+| ------------------------------------------ | ------------------------------------------------- |
+| Environment                                | 5x5 randomized reachable obstacles                |
+| Model                                      | `models/ppo_foraging_random_obstacles_100k.zip`   |
+| Evaluation Episodes                        | 1000 seeded episodes                              |
+| Success Rate                               | 76.30%                                            |
+| Failure Rate                               | 23.70%                                            |
+| Failures                                   | 237                                               |
+| Saved Failure Cases                        | 10                                                |
+| Average No-Move Steps per Failed Episode   | 48.45                                             |
+| Average Repeated-Position Steps per Failed Episode | 48.45                                      |
+| Output File                                | `results/random_obstacle_failure_cases.txt`       |
+| Analysis Script                            | `evaluation/analyze_random_obstacle_failures.py`  |
+
+### Conclusion
+
+Failure-case analysis showed that the PPO policy failed in 237 out of 1000 randomized-obstacle episodes.
+
+The most important observation is that failed episodes were dominated by repeated no-move behavior. The model produced an average of 48.45 no-move steps per failed episode, close to the 50-step episode limit.
+
+This suggests that in many failed episodes the deterministic PPO policy repeatedly selected invalid or ineffective actions, such as attempting to move into a wall or obstacle. Since the current reward function does not penalize invalid moves and only gives reward when the food is reached, the policy can become trapped in states where it repeatedly selects the same ineffective action.
+
+This supports the interpretation that the 76.30% success rate reflects a learned-policy limitation rather than an environment-generation bug.
+
+---
+
 # Summary Table
 
 | Experiment                    | Training Environment     | Evaluation Environment   | Timesteps | Success Rate | Avg Reward | Avg Episode Length |
@@ -257,6 +310,7 @@ This suggests that, under the current sparse reward function and observation des
 | PPO Random Obstacles          | 5x5 randomized obstacles | 5x5 randomized obstacles |       50k |       70.90% |       0.71 |              17.14 |
 | PPO Random Obstacles          | 5x5 randomized obstacles | 5x5 randomized obstacles |      100k |       76.30% |       0.76 |              14.74 |
 | PPO Random Obstacles          | 5x5 randomized obstacles | 5x5 randomized obstacles |      200k |       76.20% |       0.76 |              14.82 |
+| BFS Oracle                    | N/A                      | 5x5 randomized obstacles |       N/A |      100.00% |       1.00 |               4.29 |
 
 ---
 
@@ -270,6 +324,8 @@ This suggests that, under the current sparse reward function and observation des
 6. A fixed-obstacle PPO policy did not fully generalize to randomized obstacle layouts.
 7. Training directly on randomized obstacles improved generalization.
 8. Increasing randomized-obstacle training from 50k to 100k further improved robustness and efficiency, but performance plateaued at 200k timesteps.
+9. The BFS oracle solved 100% of the randomized-obstacle environments, confirming that the task was solvable.
+10. PPO failure-case analysis showed that failed episodes were dominated by repeated no-move behavior, suggesting limitations of the learned policy rather than impossible environments.
 
 ---
 
@@ -305,4 +361,3 @@ Planned setup:
 Scientific question:
 
 Does adding multiple agents improve foraging efficiency?
-

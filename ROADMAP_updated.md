@@ -19,6 +19,8 @@ The main research themes are:
 * state representation;
 * randomized environment robustness;
 * training-duration sensitivity;
+* oracle validation;
+* failure-case analysis;
 * multi-agent scalability.
 
 The final goal is to present a controlled experimental study of reinforcement learning for foraging behavior, progressing from a single-agent system toward a simple swarm-like multi-agent setup.
@@ -70,10 +72,10 @@ Implemented:
 
 Key result:
 
-| Agent        | Success Rate | Average Steps |
-| ------------ | -----------: | ------------: |
-| Random Agent |          63% |         30.55 |
-| PPO Agent    |         100% |          4.26 |
+| Agent | Success Rate | Average Steps |
+|---|---:|---:|
+| Random Agent | 63% | 30.55 |
+| PPO Agent | 100% | 4.26 |
 
 ---
 
@@ -87,9 +89,9 @@ Train PPO on 5x5 and evaluate on 10x10.
 
 Key result:
 
-| Experiment                 | Success Rate | Average Steps |
-| -------------------------- | -----------: | ------------: |
-| PPO 5x5 evaluated on 10x10 |          96% |         12.88 |
+| Experiment | Success Rate | Average Steps |
+|---|---:|---:|
+| PPO 5x5 evaluated on 10x10 | 96% | 12.88 |
 
 ---
 
@@ -120,10 +122,10 @@ Implemented:
 
 Key result:
 
-| Experiment                                   | Success Rate | Average Steps |
-| -------------------------------------------- | -----------: | ------------: |
-| PPO fixed obstacles 50k                      |          70% |         17.35 |
-| PPO fixed obstacles + state augmentation 50k |          87% |          9.94 |
+| Experiment | Success Rate | Average Steps |
+|---|---:|---:|
+| PPO fixed obstacles 50k | 70% | 17.35 |
+| PPO fixed obstacles + state augmentation 50k | 87% | 9.94 |
 
 Main finding:
 
@@ -145,15 +147,15 @@ Implemented:
 
 Key validation:
 
-| Test                              |      Result |
-| --------------------------------- | ----------: |
+| Test | Result |
+|---|---:|
 | Reachable randomized environments | 1000 / 1000 |
 
 Key result:
 
-| Model               | Evaluation Environment | Success Rate | Average Steps |
-| ------------------- | ---------------------- | -----------: | ------------: |
-| PPO fixed obstacles | Randomized obstacles   |       65.50% |         19.59 |
+| Model | Evaluation Environment | Success Rate | Average Steps |
+|---|---|---:|---:|
+| PPO fixed obstacles | Randomized obstacles | 65.50% | 19.59 |
 
 Main finding:
 
@@ -174,11 +176,11 @@ Implemented:
 
 Key result:
 
-| Model                                   | Success Rate | Average Steps |
-| --------------------------------------- | -----------: | ------------: |
-| PPO fixed obstacles on random obstacles |       65.50% |         19.59 |
-| PPO random obstacles 50k                |       70.90% |         17.14 |
-| PPO random obstacles 100k               |       76.30% |         14.74 |
+| Model | Success Rate | Average Steps |
+|---|---:|---:|
+| PPO fixed obstacles on random obstacles | 65.50% | 19.59 |
+| PPO random obstacles 50k | 70.90% | 17.14 |
+| PPO random obstacles 100k | 76.30% | 14.74 |
 
 Main finding:
 
@@ -203,12 +205,12 @@ Model:
 
 Key result:
 
-| Model                                   | Success Rate | Average Reward | Average Steps |
-| --------------------------------------- | -----------: | -------------: | ------------: |
-| PPO fixed obstacles on random obstacles |       65.50% |           0.66 |         19.59 |
-| PPO random obstacles 50k                |       70.90% |           0.71 |         17.14 |
-| PPO random obstacles 100k               |       76.30% |           0.76 |         14.74 |
-| PPO random obstacles 200k               |       76.20% |           0.76 |         14.82 |
+| Model | Success Rate | Average Reward | Average Steps |
+|---|---:|---:|---:|
+| PPO fixed obstacles on random obstacles | 65.50% | 0.66 | 19.59 |
+| PPO random obstacles 50k | 70.90% | 0.71 | 17.14 |
+| PPO random obstacles 100k | 76.30% | 0.76 | 14.74 |
+| PPO random obstacles 200k | 76.20% | 0.76 | 14.82 |
 
 Main finding:
 
@@ -217,6 +219,37 @@ Increasing randomized-obstacle training from 100k to 200k timesteps did not prod
 The 100k model achieved a success rate of 76.30%, while the 200k model achieved 76.20%. The average episode length also remained almost unchanged.
 
 This suggests that, under the current sparse reward function and observation design, the randomized-obstacle PPO policy reaches a performance plateau around 100k timesteps.
+
+---
+
+### Post-Day 9 - BFS Oracle and PPO Failure-Case Analysis
+
+Status: completed
+
+Implemented:
+
+* BFS oracle evaluation on 1000 seeded randomized-obstacle environments;
+* shortest-path baseline for environment solvability validation;
+* PPO failure-case analysis using the 100k randomized-obstacle model;
+* saved example failure cases in `results/random_obstacle_failure_cases.txt`.
+
+BFS oracle result:
+
+| Method | Success Rate | Average Shortest Path Length | Average Steps | Failed Seeds |
+|---|---:|---:|---:|---|
+| BFS oracle | 100.00% | 4.29 | 4.29 | `[]` |
+
+PPO failure-case analysis result:
+
+| Model | Success Rate | Failure Rate | Failures | Avg No-Move Steps per Failed Episode | Avg Repeated-Position Steps per Failed Episode |
+|---|---:|---:|---:|---:|---:|
+| PPO random obstacles 100k | 76.30% | 23.70% | 237 | 48.45 | 48.45 |
+
+Main finding:
+
+The BFS oracle confirmed that all evaluated randomized-obstacle environments were solvable.
+
+PPO failure-case analysis showed that failed episodes were dominated by repeated no-move behavior. This suggests that PPO failures are not caused by unreachable food positions, but by limitations of the learned deterministic policy under sparse rewards and randomized obstacle layouts.
 
 ---
 
@@ -351,11 +384,11 @@ Evaluate whether adding agents improves foraging efficiency.
 
 ### Planned Experiments
 
-| Experiment           | Agents | Policy | Environment |
-| -------------------- | -----: | ------ | ----------- |
-| Random baseline      |      2 | Random | 5x5         |
-| PPO multi-agent      |      2 | PPO    | 5x5         |
-| Optional scalability |      3 | PPO    | 5x5         |
+| Experiment | Agents | Policy | Environment |
+|---|---:|---|---|
+| Random baseline | 2 | Random | 5x5 |
+| PPO multi-agent | 2 | PPO | 5x5 |
+| Optional scalability | 3 | PPO | 5x5 |
 
 ### Planned Metrics
 
@@ -396,10 +429,11 @@ The final report should include:
 4. Experimental setup
 5. Results
 6. Sensitivity analysis
-7. Multi-agent extension
-8. Discussion
-9. Limitations
-10. Conclusion
+7. Oracle baseline and failure-case analysis
+8. Multi-agent extension
+9. Discussion
+10. Limitations
+11. Conclusion
 
 ---
 
@@ -413,10 +447,16 @@ The final report should include:
 * Generate final plots and summary tables.
 * Write clear scientific conclusions.
 
+### Completed Quality Improvements
+
+* Completed 200k randomized-obstacle training sensitivity analysis.
+* Added BFS oracle baseline for environment solvability validation.
+* Added PPO failure-case analysis for learned-behavior interpretation.
+
 ### Strongly Recommended
 
-* Add trajectory examples.
-* Analyze success and failure cases.
+* Add trajectory examples for successful PPO episodes.
+* Analyze success and failure cases in the final report.
 * Explain the learned behavior qualitatively.
 * Keep all experiments reproducible and documented.
 
@@ -424,6 +464,7 @@ The final report should include:
 
 * 3-agent scalability.
 * Reward shaping.
+* Invalid-action penalty.
 * Obstacle density variation.
 * Larger-grid training from scratch.
 
@@ -456,5 +497,7 @@ Adding obstacle coordinates to the observation space improved fixed-obstacle per
 Randomized obstacle training improved generalization from 65.50% to 76.30%, and reduced the average episode length from 19.59 to 14.74 steps.
 
 Increasing randomized-obstacle training from 100k to 200k did not improve performance, suggesting that the current PPO setup reaches a plateau around 100k timesteps under the sparse reward and observation design.
+
+The BFS oracle achieved 100% success on the same randomized-obstacle environments, confirming that the evaluation environments were solvable. Failure-case analysis showed that PPO failures were dominated by repeated no-move behavior, suggesting that the model sometimes becomes trapped in ineffective deterministic actions rather than failing because of impossible task configurations.
 
 Further work will test whether larger-grid evaluation and multi-agent extensions improve robustness and scalability.

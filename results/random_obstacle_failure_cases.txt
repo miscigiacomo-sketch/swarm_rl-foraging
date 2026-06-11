@@ -1,0 +1,317 @@
+RANDOM OBSTACLE PPO FAILURE CASE ANALYSIS
+=========================================
+
+Model: models/ppo_foraging_random_obstacles_100k.zip
+Episodes: 1000
+Grid Size: 5x5
+Successes: 763
+Failures: 237
+Success Rate: 76.30%
+Failure Rate: 23.70%
+
+Average no-move steps per failed episode: 48.45
+Average repeated-position steps per failed episode: 48.45
+
+Saved Failure Cases
+===================
+
+Failure Case 1
+--------------------
+Seed: 6
+Initial Agent Position: (np.int64(0), np.int64(0))
+Final Agent Position: (np.int64(2), np.int64(0))
+Food Position: (np.int64(3), np.int64(1))
+Obstacles: [(np.int64(2), np.int64(2)), (np.int64(2), np.int64(1)), (np.int64(4), np.int64(1))]
+Episode Steps: 50
+Oracle Shortest Path Length: 4
+No-Move Steps: 48
+Repeated-Position Steps: 48
+Repeated Positions: {(np.int64(2), np.int64(0)): 49}
+
+Actions Taken:
+['right', 'right', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down']
+
+Initial Grid:
+A . . . .
+. . X F X
+. . X . .
+. . . . .
+. . . . .
+
+Trajectory Grid:
+* * A . .
+. . X F X
+. . X . .
+. . . . .
+. . . . .
+
+Failure Case 2
+--------------------
+Seed: 8
+Initial Agent Position: (np.int64(0), np.int64(0))
+Final Agent Position: (np.int64(3), np.int64(0))
+Food Position: (np.int64(3), np.int64(3))
+Obstacles: [(np.int64(3), np.int64(1)), (np.int64(1), np.int64(4)), (np.int64(0), np.int64(1))]
+Episode Steps: 50
+Oracle Shortest Path Length: 6
+No-Move Steps: 47
+Repeated-Position Steps: 47
+Repeated Positions: {(np.int64(3), np.int64(0)): 48}
+
+Actions Taken:
+['right', 'right', 'right', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down']
+
+Initial Grid:
+A . . . .
+X . . X .
+. . . . .
+. . . F .
+. X . . .
+
+Trajectory Grid:
+* * * A .
+X . . X .
+. . . . .
+. . . F .
+. X . . .
+
+Failure Case 3
+--------------------
+Seed: 10
+Initial Agent Position: (np.int64(0), np.int64(0))
+Final Agent Position: (np.int64(1), np.int64(0))
+Food Position: (np.int64(4), np.int64(2))
+Obstacles: [(np.int64(3), np.int64(4)), (np.int64(1), np.int64(1)), (np.int64(2), np.int64(0))]
+Episode Steps: 50
+Oracle Shortest Path Length: 6
+No-Move Steps: 49
+Repeated-Position Steps: 49
+Repeated Positions: {(np.int64(1), np.int64(0)): 50}
+
+Actions Taken:
+['right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right']
+
+Initial Grid:
+A . X . .
+. X . . .
+. . . . F
+. . . . .
+. . . X .
+
+Trajectory Grid:
+* A X . .
+. X . . .
+. . . . F
+. . . . .
+. . . X .
+
+Failure Case 4
+--------------------
+Seed: 14
+Initial Agent Position: (np.int64(0), np.int64(0))
+Final Agent Position: (np.int64(0), np.int64(2))
+Food Position: (np.int64(1), np.int64(4))
+Obstacles: [(np.int64(0), np.int64(4)), (np.int64(3), np.int64(1)), (np.int64(0), np.int64(3))]
+Episode Steps: 50
+Oracle Shortest Path Length: 5
+No-Move Steps: 48
+Repeated-Position Steps: 48
+Repeated Positions: {(np.int64(0), np.int64(2)): 49}
+
+Actions Taken:
+['down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down']
+
+Initial Grid:
+A . . . .
+. . . X .
+. . . . .
+X . . . .
+X F . . .
+
+Trajectory Grid:
+* . . . .
+* . . X .
+A . . . .
+X . . . .
+X F . . .
+
+Failure Case 5
+--------------------
+Seed: 21
+Initial Agent Position: (np.int64(0), np.int64(0))
+Final Agent Position: (np.int64(0), np.int64(0))
+Food Position: (np.int64(3), np.int64(4))
+Obstacles: [(np.int64(1), np.int64(3)), (np.int64(2), np.int64(3)), (np.int64(1), np.int64(0))]
+Episode Steps: 50
+Oracle Shortest Path Length: 7
+No-Move Steps: 50
+Repeated-Position Steps: 50
+Repeated Positions: {(np.int64(0), np.int64(0)): 51}
+
+Actions Taken:
+['right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right']
+
+Initial Grid:
+A X . . .
+. . . . .
+. . . . .
+. X X . .
+. . . F .
+
+Trajectory Grid:
+A X . . .
+. . . . .
+. . . . .
+. X X . .
+. . . F .
+
+Failure Case 6
+--------------------
+Seed: 23
+Initial Agent Position: (np.int64(0), np.int64(0))
+Final Agent Position: (np.int64(0), np.int64(0))
+Food Position: (np.int64(3), np.int64(0))
+Obstacles: [(np.int64(0), np.int64(3)), (np.int64(2), np.int64(3)), (np.int64(1), np.int64(0))]
+Episode Steps: 50
+Oracle Shortest Path Length: 5
+No-Move Steps: 50
+Repeated-Position Steps: 50
+Repeated Positions: {(np.int64(0), np.int64(0)): 51}
+
+Actions Taken:
+['right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right']
+
+Initial Grid:
+A X . F .
+. . . . .
+. . . . .
+X . X . .
+. . . . .
+
+Trajectory Grid:
+A X . F .
+. . . . .
+. . . . .
+X . X . .
+. . . . .
+
+Failure Case 7
+--------------------
+Seed: 25
+Initial Agent Position: (np.int64(0), np.int64(0))
+Final Agent Position: (np.int64(0), np.int64(1))
+Food Position: (np.int64(2), np.int64(1))
+Obstacles: [(np.int64(2), np.int64(0)), (np.int64(4), np.int64(0)), (np.int64(1), np.int64(1))]
+Episode Steps: 50
+Oracle Shortest Path Length: 5
+No-Move Steps: 49
+Repeated-Position Steps: 49
+Repeated Positions: {(np.int64(0), np.int64(1)): 50}
+
+Actions Taken:
+['down', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right']
+
+Initial Grid:
+A . X . X
+. X F . .
+. . . . .
+. . . . .
+. . . . .
+
+Trajectory Grid:
+* . X . X
+A X F . .
+. . . . .
+. . . . .
+. . . . .
+
+Failure Case 8
+--------------------
+Seed: 34
+Initial Agent Position: (np.int64(0), np.int64(0))
+Final Agent Position: (np.int64(0), np.int64(0))
+Food Position: (np.int64(0), np.int64(2))
+Obstacles: [(np.int64(0), np.int64(4)), (np.int64(0), np.int64(1)), (np.int64(0), np.int64(3))]
+Episode Steps: 50
+Oracle Shortest Path Length: 4
+No-Move Steps: 50
+Repeated-Position Steps: 50
+Repeated Positions: {(np.int64(0), np.int64(0)): 51}
+
+Actions Taken:
+['down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down']
+
+Initial Grid:
+A . . . .
+X . . . .
+F . . . .
+X . . . .
+X . . . .
+
+Trajectory Grid:
+A . . . .
+X . . . .
+F . . . .
+X . . . .
+X . . . .
+
+Failure Case 9
+--------------------
+Seed: 35
+Initial Agent Position: (np.int64(0), np.int64(0))
+Final Agent Position: (np.int64(0), np.int64(0))
+Food Position: (np.int64(1), np.int64(4))
+Obstacles: [(np.int64(0), np.int64(1)), (np.int64(4), np.int64(2)), (np.int64(4), np.int64(4))]
+Episode Steps: 50
+Oracle Shortest Path Length: 5
+No-Move Steps: 50
+Repeated-Position Steps: 50
+Repeated Positions: {(np.int64(0), np.int64(0)): 51}
+
+Actions Taken:
+['down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down', 'down']
+
+Initial Grid:
+A . . . .
+X . . . .
+. . . . X
+. . . . .
+. F . . X
+
+Trajectory Grid:
+A . . . .
+X . . . .
+. . . . X
+. . . . .
+. F . . X
+
+Failure Case 10
+--------------------
+Seed: 36
+Initial Agent Position: (np.int64(0), np.int64(0))
+Final Agent Position: (np.int64(0), np.int64(0))
+Food Position: (np.int64(4), np.int64(2))
+Obstacles: [(np.int64(1), np.int64(0)), (np.int64(2), np.int64(1)), (np.int64(2), np.int64(4))]
+Episode Steps: 50
+Oracle Shortest Path Length: 6
+No-Move Steps: 50
+Repeated-Position Steps: 50
+Repeated Positions: {(np.int64(0), np.int64(0)): 51}
+
+Actions Taken:
+['right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right', 'right']
+
+Initial Grid:
+A X . . .
+. . X . .
+. . . . F
+. . . . .
+. . X . .
+
+Trajectory Grid:
+A X . . .
+. . X . .
+. . . . F
+. . . . .
+. . X . .
+

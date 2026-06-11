@@ -18,6 +18,8 @@ The project focuses on:
 * state representation;
 * robustness to randomized environments;
 * training-duration sensitivity;
+* oracle validation;
+* failure-case analysis;
 * future multi-agent scalability.
 
 The goal is not to build a realistic simulator, but to conduct a controlled experimental study of reinforcement learning behavior under increasing environmental complexity.
@@ -38,6 +40,7 @@ Day 6: COMPLETED
 Day 7: COMPLETED
 Day 8: COMPLETED
 Day 9: COMPLETED
+Post-Day 9 validation: COMPLETED
 Day 10: NEXT
 ```
 
@@ -97,6 +100,8 @@ swarm_rl/
 │   ├── evaluate_obstacle_model.py
 │   ├── evaluate_fixed_model_random_obstacles.py
 │   ├── evaluate_random_obstacle_model.py
+│   ├── evaluate_oracle_random_obstacles.py
+│   ├── analyze_random_obstacle_failures.py
 │   ├── compare_random_obstacle_generalization.py
 │   ├── compare_agents.py
 │   └── generate_plots.py
@@ -117,6 +122,7 @@ swarm_rl/
 │   ├── grid_size_average_steps.png
 │   ├── obstacle_success_rate.png
 │   ├── obstacle_average_steps.png
+│   ├── random_obstacle_failure_cases.txt
 │   └── report_metrics.txt
 │
 ├── README.md
@@ -287,10 +293,10 @@ Implemented:
 
 Results:
 
-| Agent        | Success Rate | Average Reward | Average Steps |
-| ------------ | -----------: | -------------: | ------------: |
-| Random Agent |          63% |           0.63 |         30.55 |
-| PPO Agent    |         100% |           1.00 |          4.26 |
+| Agent | Success Rate | Average Reward | Average Steps |
+|---|---:|---:|---:|
+| Random Agent | 63% | 0.63 | 30.55 |
+| PPO Agent | 100% | 1.00 | 4.26 |
 
 Conclusion:
 
@@ -306,9 +312,9 @@ Train PPO on a 5x5 grid and evaluate it on a 10x10 grid.
 
 Results:
 
-| Experiment                 | Success Rate | Average Reward | Average Episode Length |
-| -------------------------- | -----------: | -------------: | ---------------------: |
-| PPO 5x5 evaluated on 10x10 |          96% |           0.96 |                  12.88 |
+| Experiment | Success Rate | Average Reward | Average Episode Length |
+|---|---:|---:|---:|
+| PPO 5x5 evaluated on 10x10 | 96% | 0.96 | 12.88 |
 
 Conclusion:
 
@@ -352,12 +358,12 @@ Implemented:
 
 Results:
 
-| Experiment                             | Success Rate | Average Reward | Average Episode Length |
-| -------------------------------------- | -----------: | -------------: | ---------------------: |
-| PPO no obstacles                       |         100% |           1.00 |                   3.86 |
-| PPO obstacles 20k                      |          79% |           0.79 |                  13.34 |
-| PPO obstacles 50k                      |          70% |           0.70 |                  17.35 |
-| PPO obstacles + state augmentation 50k |          87% |           0.87 |                   9.94 |
+| Experiment | Success Rate | Average Reward | Average Episode Length |
+|---|---:|---:|---:|
+| PPO no obstacles | 100% | 1.00 | 3.86 |
+| PPO obstacles 20k | 79% | 0.79 | 13.34 |
+| PPO obstacles 50k | 70% | 0.70 | 17.35 |
+| PPO obstacles + state augmentation 50k | 87% | 0.87 | 9.94 |
 
 Conclusion:
 
@@ -393,9 +399,9 @@ The fixed-obstacle PPO model was evaluated on randomized reachable obstacle envi
 
 Result:
 
-| Model                                    | Training Environment | Evaluation Environment     | Success Rate | Average Reward | Average Episode Length |
-| ---------------------------------------- | -------------------- | -------------------------- | -----------: | -------------: | ---------------------: |
-| PPO fixed obstacles + state augmentation | Fixed obstacles      | Random reachable obstacles |       65.50% |           0.66 |                  19.59 |
+| Model | Training Environment | Evaluation Environment | Success Rate | Average Reward | Average Episode Length |
+|---|---|---|---:|---:|---:|
+| PPO fixed obstacles + state augmentation | Fixed obstacles | Random reachable obstacles | 65.50% | 0.66 | 19.59 |
 
 Conclusion:
 
@@ -421,11 +427,11 @@ models/ppo_foraging_random_obstacles_100k.zip
 
 Final comparison:
 
-| Model                     | Training Environment | Evaluation Environment | Success Rate | Average Reward | Average Episode Length |
-| ------------------------- | -------------------- | ---------------------- | -----------: | -------------: | ---------------------: |
-| PPO fixed obstacles       | Fixed obstacles      | Random obstacles       |       65.50% |           0.66 |                  19.59 |
-| PPO random obstacles 50k  | Random obstacles     | Random obstacles       |       70.90% |           0.71 |                  17.14 |
-| PPO random obstacles 100k | Random obstacles     | Random obstacles       |       76.30% |           0.76 |                  14.74 |
+| Model | Training Environment | Evaluation Environment | Success Rate | Average Reward | Average Episode Length |
+|---|---|---|---:|---:|---:|
+| PPO fixed obstacles | Fixed obstacles | Random obstacles | 65.50% | 0.66 | 19.59 |
+| PPO random obstacles 50k | Random obstacles | Random obstacles | 70.90% | 0.71 | 17.14 |
+| PPO random obstacles 100k | Random obstacles | Random obstacles | 76.30% | 0.76 | 14.74 |
 
 Conclusion:
 
@@ -451,12 +457,12 @@ models/ppo_foraging_random_obstacles_200k.zip
 
 Final comparison:
 
-| Model                     | Training Environment | Evaluation Environment | Success Rate | Average Reward | Average Episode Length |
-| ------------------------- | -------------------- | ---------------------- | -----------: | -------------: | ---------------------: |
-| PPO fixed obstacles       | Fixed obstacles      | Random obstacles       |       65.50% |           0.66 |                  19.59 |
-| PPO random obstacles 50k  | Random obstacles     | Random obstacles       |       70.90% |           0.71 |                  17.14 |
-| PPO random obstacles 100k | Random obstacles     | Random obstacles       |       76.30% |           0.76 |                  14.74 |
-| PPO random obstacles 200k | Random obstacles     | Random obstacles       |       76.20% |           0.76 |                  14.82 |
+| Model | Training Environment | Evaluation Environment | Success Rate | Average Reward | Average Episode Length |
+|---|---|---|---:|---:|---:|
+| PPO fixed obstacles | Fixed obstacles | Random obstacles | 65.50% | 0.66 | 19.59 |
+| PPO random obstacles 50k | Random obstacles | Random obstacles | 70.90% | 0.71 | 17.14 |
+| PPO random obstacles 100k | Random obstacles | Random obstacles | 76.30% | 0.76 | 14.74 |
+| PPO random obstacles 200k | Random obstacles | Random obstacles | 76.20% | 0.76 | 14.82 |
 
 Conclusion:
 
@@ -465,6 +471,35 @@ Increasing randomized-obstacle training from 100k to 200k timesteps did not prod
 The 100k model achieved a success rate of 76.30%, while the 200k model achieved 76.20%. The average episode length also remained almost unchanged.
 
 This suggests that, under the current sparse reward function and observation design, the randomized-obstacle PPO policy reaches a performance plateau around 100k timesteps.
+
+---
+
+### Post-Day 9 Validation - BFS Oracle and Failure-Case Analysis
+
+Implemented:
+
+* BFS oracle baseline on randomized obstacle environments;
+* shortest-path evaluation over 1000 seeded randomized environments;
+* PPO failure-case analysis using the best randomized-obstacle model;
+* saved failure cases to `results/random_obstacle_failure_cases.txt`.
+
+BFS oracle result:
+
+| Method | Evaluation Environment | Success Rate | Average Shortest Path Length | Average Episode Length |
+|---|---|---:|---:|---:|
+| BFS oracle | Randomized obstacles | 100.00% | 4.29 | 4.29 |
+
+PPO failure-case analysis:
+
+| Model | Success Rate | Failure Rate | Failures | Average No-Move Steps per Failed Episode | Average Repeated-Position Steps per Failed Episode |
+|---|---:|---:|---:|---:|---:|
+| PPO random obstacles 100k | 76.30% | 23.70% | 237 | 48.45 | 48.45 |
+
+Conclusion:
+
+The BFS oracle solved 100% of the same randomized-obstacle environments, confirming that all tested environments were solvable.
+
+Failure-case analysis showed that unsuccessful PPO episodes were dominated by repeated no-move behavior. This suggests that PPO failures are not caused by unreachable food positions, but by limitations of the learned deterministic policy under sparse rewards and randomized obstacle layouts.
 
 ---
 
@@ -479,6 +514,8 @@ This suggests that, under the current sparse reward function and observation des
 7. Training PPO directly on randomized obstacles improves generalization.
 8. Increasing randomized-obstacle training from 50k to 100k improves robustness and efficiency.
 9. Increasing randomized-obstacle training from 100k to 200k does not improve performance, suggesting a plateau under the current setup.
+10. BFS oracle validation confirms that the randomized-obstacle task is solvable.
+11. Failure-case analysis shows that failed PPO episodes are dominated by repeated no-move behavior.
 
 ---
 
@@ -514,13 +551,15 @@ simple foraging
 → state representation analysis
 → randomized obstacles
 → training-duration sensitivity
+→ oracle validation
+→ failure-case analysis
 → future multi-agent extension
 ```
 
 Current key message:
 
 ```text
-State representation and environment randomization both play important roles in reinforcement learning generalization and robustness. However, simply increasing training duration does not guarantee continuous improvement, as the randomized-obstacle policy plateaued after 100k timesteps.
+State representation and environment randomization both play important roles in reinforcement learning generalization and robustness. However, simply increasing training duration does not guarantee continuous improvement, as the randomized-obstacle policy plateaued after 100k timesteps. BFS oracle validation confirmed that the randomized environments were solvable, while PPO failure-case analysis showed that failed episodes were dominated by repeated no-move behavior.
 ```
 
 ---
@@ -620,5 +659,5 @@ Commit + Push
 Latest completed block:
 
 ```text
-Add 200k randomized obstacle sensitivity experiment
+Add BFS oracle and PPO failure-case analysis for randomized obstacles
 ```
