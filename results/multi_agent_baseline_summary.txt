@@ -1,0 +1,29 @@
+MULTI-AGENT BASELINE EVALUATION
+================================
+
+2 agents, 5x5 grid
+------------------------------
+
+Random baseline:
+Success Rate: 84.30%
+Average Reward: 0.84
+Average Episode Length: 21.30
+
+Greedy decentralized baseline:
+Success Rate: 100.00%
+Average Reward: 1.00
+Average Episode Length: 2.41
+
+3 agents, 5x5 grid
+------------------------------
+
+Random baseline:
+Success Rate: 92.10%
+Average Reward: 0.92
+Average Episode Length: 16.46
+
+Greedy decentralized baseline:
+Success Rate: 99.00%
+Average Reward: 0.99
+Average Episode Length: 2.52
+
