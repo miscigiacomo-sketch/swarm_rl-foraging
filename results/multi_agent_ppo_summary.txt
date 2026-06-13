@@ -1,0 +1,18 @@
+MULTI-AGENT PPO EVALUATION
+==========================
+
+Environment:
+Agents: 2
+Grid Size: 5x5
+Episodes: 1000
+
+Deterministic PPO:
+Success Rate: 98.90%
+Average Reward: 0.99
+Average Episode Length: 2.94
+
+Stochastic PPO:
+Mean Success Rate: 100.00%
+Success Rate Std: 0.00%
+Mean Average Reward: 1.00
+Mean Average Episode Length: 2.58
