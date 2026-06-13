@@ -1,0 +1,47 @@
+MULTI-AGENT GRID-SIZE GENERALIZATION
+====================================
+
+Model: models/ppo_multi_agent_2agents.zip
+Training environment: 2 agents, 5x5 grid
+Evaluation: 2 agents, 5x5 and 10x10 grids
+
+5x5 grid
+------------------------------
+
+Random baseline:
+Success Rate: 84.30%
+Average Episode Length: 21.30
+
+Greedy decentralized baseline:
+Success Rate: 100.00%
+Average Episode Length: 2.41
+
+PPO deterministic:
+Success Rate: 98.90%
+Average Episode Length: 2.94
+
+PPO stochastic:
+Mean Success Rate: 100.00%
+Success Rate Std: 0.00%
+Mean Average Episode Length: 2.57
+
+10x10 grid
+------------------------------
+
+Random baseline:
+Success Rate: 37.90%
+Average Episode Length: 38.86
+
+Greedy decentralized baseline:
+Success Rate: 100.00%
+Average Episode Length: 4.74
+
+PPO deterministic:
+Success Rate: 96.00%
+Average Episode Length: 6.90
+
+PPO stochastic:
+Mean Success Rate: 99.88%
+Success Rate Std: 0.07%
+Mean Average Episode Length: 5.64
+
