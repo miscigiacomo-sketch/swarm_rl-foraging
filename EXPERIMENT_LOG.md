@@ -400,17 +400,169 @@ The deterministic evaluation remained weaker, especially on the 10x10 grid, wher
 
 ---
 
-# Next Experiments
+# Development Tasks and Next Experiments
 
-## Multi-Agent Extension
+This section records implementation tasks separately from quantitative experiments.  
+The experiment sections above remain focused on training/evaluation results, while the tasks below track environment and project-structure changes.
 
-Planned setup:
+---
 
-* 2 agents;
-* 1 food source;
-* centralized PPO control;
-* joint action space.
+## Task 1 - Multi-Agent Fixed-Obstacle Environment
 
-Scientific question:
+| Field | Value |
+| --- | --- |
+| Status | Completed |
+| Environment | Centralized multi-agent foraging |
+| Grid Size | 5x5 |
+| Agents | 2 |
+| Obstacles | Fixed |
+| Obstacle Positions | `(2, 1)`, `(2, 2)`, `(2, 3)` |
+| Joint Action Space | `4^2 = 16` |
+| Observation Size | 12 |
+| Main File | `env/multi_agent_foraging_env.py` |
+| Test File | `tests/test_multi_agent_obstacles.py` |
 
-Does adding multiple agents improve foraging efficiency?
+### Implementation Summary
+
+The multi-agent environment was extended with optional fixed-obstacle support while preserving backward compatibility with the previous no-obstacle version.
+
+The updated environment now:
+- accepts an optional `obstacles` argument;
+- includes obstacle coordinates in the observation when obstacles are provided;
+- prevents agents from spawning on obstacle cells;
+- prevents the food from spawning on obstacle cells;
+- blocks movements into obstacle cells;
+- preserves the existing collision and position-swap prevention logic;
+- keeps the no-obstacle setup unchanged when `obstacles=None`.
+
+The text renderer was also simplified to use one-character agent labels (`A`, `B`, `C`, ...), which keeps the printed grid aligned during debugging.
+
+### Validation
+
+The obstacle environment was manually checked with 2 agents and 3 fixed obstacles.
+
+Observed configuration:
+- observation shape: `(12,)`;
+- action space: `Discrete(16)`;
+- obstacles visible in the rendered grid as `X`.
+
+Automated tests were added in `tests/test_multi_agent_obstacles.py`.
+
+Test coverage:
+- Stable-Baselines3 `check_env` compatibility;
+- correct observation shape;
+- obstacle coordinates included in the observation;
+- agents do not spawn on obstacles;
+- food does not spawn on obstacles;
+- movement into obstacle cells is blocked.
+
+Result:
+- `6 passed` for the obstacle-specific test file;
+- existing no-obstacle multi-agent tests still pass.
+
+### Conclusion
+
+The centralized multi-agent environment is now ready for obstacle-aware baseline evaluation and PPO training.
+
+---
+
+## Task 2 - Fixed-Obstacle Multi-Agent Baselines
+
+| Field | Planned Value |
+| --- | --- |
+| Environment | 5x5 multi-agent fixed-obstacle grid |
+| Agents | 2 |
+| Obstacles | Fixed: `(2, 1)`, `(2, 2)`, `(2, 3)` |
+| Baselines | Random policy and obstacle-aware greedy policy |
+| Planned Script | `evaluation/evaluate_multi_agent_obstacle_baselines.py` |
+| Planned Output | `results/multi_agent_obstacle_baseline_summary.txt` |
+
+### Objective
+
+Evaluate how random and greedy non-learning policies perform in the fixed-obstacle multi-agent environment.
+
+This will provide a reference for judging whether PPO learns useful obstacle-aware behavior.
+
+---
+
+## Task 3 - Fixed-Obstacle Multi-Agent PPO
+
+| Field | Planned Value |
+| --- | --- |
+| Environment | 5x5 multi-agent fixed-obstacle grid |
+| Agents | 2 |
+| Algorithm | PPO |
+| Planned Training Script | `train/train_ppo_multi_agent_2agents_obstacles.py` |
+| Planned Evaluation Script | `evaluation/evaluate_multi_agent_obstacle_ppo.py` |
+| Planned Model | `models/ppo_multi_agent_2agents_obstacles.zip` |
+
+### Objective
+
+Train and evaluate a centralized PPO controller in the fixed-obstacle multi-agent environment.
+
+The result should be compared against the random and greedy obstacle-aware baselines from Task 2.
+
+---
+
+## Task 4 - Random-Obstacle Multi-Agent Environment
+
+| Field | Planned Value |
+| --- | --- |
+| Environment | 5x5 multi-agent randomized-obstacle grid |
+| Agents | 2 |
+| Obstacles | Randomized reachable obstacles |
+| Main File | `env/multi_agent_foraging_env.py` |
+
+### Objective
+
+Extend the multi-agent environment from fixed obstacles to randomized obstacles.
+
+The generator should avoid placing obstacles on agents or food and should preserve reachability so that generated episodes are solvable.
+
+---
+
+## Task 5 - Random-Obstacle Multi-Agent PPO on 5x5
+
+| Field | Planned Value |
+| --- | --- |
+| Environment | 5x5 randomized-obstacle multi-agent grid |
+| Agents | 2 |
+| Algorithm | PPO |
+| Evaluation Modes | Deterministic and stochastic action selection |
+
+### Objective
+
+Train PPO directly on randomized multi-agent obstacle layouts and evaluate whether it becomes more robust than a policy trained only on fixed obstacles.
+
+---
+
+## Task 6 - Random-Obstacle Multi-Agent Generalization to 10x10
+
+| Field | Planned Value |
+| --- | --- |
+| Training Environment | 5x5 randomized-obstacle multi-agent grid |
+| Evaluation Environment | 10x10 randomized-obstacle multi-agent grid |
+| Agents | 2 |
+
+### Objective
+
+Evaluate whether a PPO policy trained on 5x5 randomized-obstacle environments transfers to a larger 10x10 grid with variable obstacles.
+
+This is the main final generalization experiment for the 2-agent setting.
+
+---
+
+## Task 7 - Optional 3-Agent Scalability Experiment
+
+| Field | Planned Value |
+| --- | --- |
+| Environment | Multi-agent foraging with obstacles |
+| Agents | 3 |
+| Joint Action Space | `4^3 = 64` |
+| Priority | Optional |
+
+### Objective
+
+Test whether the centralized-control approach remains effective when increasing from 2 to 3 agents.
+
+This task is optional because it increases the action-space size substantially and may require a separate training setup.

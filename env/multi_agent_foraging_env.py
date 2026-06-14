@@ -10,12 +10,19 @@ class MultiAgentForagingEnv(gym.Env):
     A single policy controls multiple agents through a joint action space.
     The agents move in a shared grid and try to reach one food source.
 
-    This environment supports both 2-agent and 3-agent experiments.
+    Optional fixed obstacles can be added to study obstacle-aware
+    multi-agent foraging.
     """
 
     metadata = {"render_modes": ["human"]}
 
-    def __init__(self, grid_size=5, num_agents=2, max_steps=50):
+    def __init__(
+        self,
+        grid_size=5,
+        num_agents=2,
+        max_steps=50,
+        obstacles=None,
+    ):
         super().__init__()
 
         if num_agents < 2:
@@ -24,6 +31,16 @@ class MultiAgentForagingEnv(gym.Env):
         self.grid_size = grid_size
         self.num_agents = num_agents
         self.max_steps = max_steps
+
+        if obstacles is None:
+            self.obstacles = []
+        else:
+            self.obstacles = [
+                np.array(obstacle, dtype=np.int32)
+                for obstacle in obstacles
+            ]
+
+        self.num_obstacles = len(self.obstacles)
 
         self.num_actions_per_agent = 4
 
@@ -35,8 +52,9 @@ class MultiAgentForagingEnv(gym.Env):
         )
 
         # Observation:
-        # agent1_x, agent1_y, agent2_x, agent2_y, ..., food_x, food_y
-        observation_size = 2 * self.num_agents + 2
+        # agent1_x, agent1_y, agent2_x, agent2_y, ..., food_x, food_y,
+        # obstacle1_x, obstacle1_y, obstacle2_x, obstacle2_y, ...
+        observation_size = 2 * self.num_agents + 2 + 2 * self.num_obstacles
 
         self.observation_space = spaces.Box(
             low=0,
@@ -55,7 +73,7 @@ class MultiAgentForagingEnv(gym.Env):
         self.current_step = 0
         self.agent_positions = []
 
-        # Spawn agents in unique cells.
+        # Spawn agents in unique valid cells.
         while len(self.agent_positions) < self.num_agents:
             position = self.np_random.integers(
                 low=0,
@@ -64,8 +82,13 @@ class MultiAgentForagingEnv(gym.Env):
                 dtype=np.int32,
             )
 
-            if tuple(position) not in [tuple(pos) for pos in self.agent_positions]:
-                self.agent_positions.append(position)
+            if self._is_obstacle(position):
+                continue
+
+            if tuple(position) in [tuple(pos) for pos in self.agent_positions]:
+                continue
+
+            self.agent_positions.append(position)
 
         self.food_pos = self._generate_food_position()
 
@@ -100,6 +123,10 @@ class MultiAgentForagingEnv(gym.Env):
                 self.grid_size - 1,
             )
 
+            # Block movement into obstacles.
+            if self._is_obstacle(proposed_position):
+                proposed_position = old_positions[agent_index].copy()
+
             proposed_positions.append(proposed_position)
 
         # If agents collide or swap positions, keep all agents in their old positions.
@@ -111,31 +138,43 @@ class MultiAgentForagingEnv(gym.Env):
         else:
             self.agent_positions = proposed_positions
 
-        reward = 0
+        reward = 0.0
         terminated = False
 
         for agent_position in self.agent_positions:
             if np.array_equal(agent_position, self.food_pos):
-                reward = 1
+                reward = 1.0
                 terminated = True
                 break
 
         truncated = self.current_step >= self.max_steps
 
         observation = self._get_obs()
-        info = {}
+        info = {
+            "agent_positions": [pos.copy() for pos in self.agent_positions],
+            "food_pos": self.food_pos.copy(),
+            "obstacles": [obs.copy() for obs in self.obstacles],
+        }
 
         return observation, reward, terminated, truncated, info
 
     def render(self):
         grid = [["." for _ in range(self.grid_size)] for _ in range(self.grid_size)]
 
+        for obstacle in self.obstacles:
+            obstacle_x, obstacle_y = obstacle
+            grid[obstacle_y][obstacle_x] = "X"
+
         food_x, food_y = self.food_pos
         grid[food_y][food_x] = "F"
 
+        # Use one-character symbols to keep the printed grid aligned.
+        # A = agent 1, B = agent 2, C = agent 3, ...
+        agent_symbols = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
         for index, agent_position in enumerate(self.agent_positions):
             agent_x, agent_y = agent_position
-            grid[agent_y][agent_x] = f"A{index + 1}"
+            grid[agent_y][agent_x] = agent_symbols[index]
 
         for row in grid:
             print(" ".join(row))
@@ -146,11 +185,8 @@ class MultiAgentForagingEnv(gym.Env):
         """
         Decode a single joint action into one action per agent.
 
-        Example for 2 agents:
-        action space size = 4^2 = 16
-
-        Example for 3 agents:
-        action space size = 4^3 = 64
+        The environment uses base-4 encoding:
+        action = a1 + 4*a2 + 16*a3 + ...
         """
         action = int(action)
 
@@ -174,8 +210,13 @@ class MultiAgentForagingEnv(gym.Env):
             food_tuple = tuple(food_pos)
             agent_tuples = [tuple(pos) for pos in self.agent_positions]
 
-            if food_tuple not in agent_tuples:
-                return food_pos
+            if food_tuple in agent_tuples:
+                continue
+
+            if self._is_obstacle(food_pos):
+                continue
+
+            return food_pos
 
     def _get_obs(self):
         observation = []
@@ -195,7 +236,21 @@ class MultiAgentForagingEnv(gym.Env):
             ]
         )
 
+        for obstacle in self.obstacles:
+            observation.extend(
+                [
+                    obstacle[0],
+                    obstacle[1],
+                ]
+            )
+
         return np.array(observation, dtype=np.float32)
+
+    def _is_obstacle(self, position):
+        return any(
+            np.array_equal(position, obstacle)
+            for obstacle in self.obstacles
+        )
 
     def _has_collision(self, positions):
         position_tuples = [tuple(pos) for pos in positions]
@@ -214,5 +269,3 @@ class MultiAgentForagingEnv(gym.Env):
                     return True
 
         return False
-    
-    
