@@ -1,0 +1,22 @@
+MULTI-AGENT FIXED-OBSTACLE BASELINE EVALUATION
+=============================================
+
+Environment setup:
+- Grid size: 5x5
+- Number of agents: 2
+- Max steps: 50
+- Obstacles: [(2, 1), (2, 2), (2, 3)]
+- Control type: centralized joint action space
+
+Random baseline:
+Success Rate: 76.40%
+Average Reward: 0.76
+Average Episode Length: 24.63
+
+Greedy obstacle-aware baseline:
+Success Rate: 93.10%
+Average Reward: 0.93
+Average Episode Length: 5.83
+
+Interpretation:
+The random baseline measures performance under uninformed joint actions. The greedy obstacle-aware baseline is a stronger non-learning reference: each agent moves toward the food using Manhattan distance while avoiding obstacles, collisions, and direct swaps when possible.
