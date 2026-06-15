@@ -1,0 +1,46 @@
+MULTI-AGENT FIXED-OBSTACLE PPO EVALUATION
+=========================================
+
+Environment setup:
+- Grid size: 5x5
+- Number of agents: 2
+- Max steps: 50
+- Obstacles: [(2, 1), (2, 2), (2, 3)]
+- Control type: centralized joint action space
+- Joint action space: 16 actions
+- Observation size: 12
+
+Model: models/ppo_multi_agent_2agents_obstacles.zip
+Evaluation episodes: 1000 seeded episodes
+
+Baseline references from Task 2:
+Random baseline: 76.40% success, average reward 0.76, average episode length 24.63
+Greedy obstacle-aware baseline: 93.10% success, average reward 0.93, average episode length 5.83
+
+PPO deterministic:
+Success Rate: 92.80%
+Average Reward: 0.93
+Average Episode Length: 6.08
+
+PPO stochastic:
+Mean Success Rate: 100.00%
+Success Rate Std: 0.00%
+Min Success Rate: 100.00%
+Max Success Rate: 100.00%
+Mean Average Reward: 1.00
+Mean Average Episode Length: 3.32
+
+Per-action-seed stochastic results:
+Action Seed 0: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 3.34
+Action Seed 1: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 3.28
+Action Seed 2: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 3.26
+Action Seed 3: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 3.40
+Action Seed 4: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 3.35
+Action Seed 42: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 3.37
+Action Seed 100: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 3.27
+Action Seed 123: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 3.36
+Action Seed 999: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 3.30
+Action Seed 2024: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 3.30
+
+Interpretation:
+The centralized PPO policy is evaluated in the same fixed-obstacle multi-agent environment used for the Task 2 baselines. The deterministic PPO result shows the performance of argmax action selection, while the stochastic PPO result measures whether sampling from the learned policy improves robustness. The PPO results should be compared against the random baseline and the greedy obstacle-aware baseline.
