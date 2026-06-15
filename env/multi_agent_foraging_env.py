@@ -1,3 +1,5 @@
+from collections import deque
+
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
@@ -10,8 +12,10 @@ class MultiAgentForagingEnv(gym.Env):
     A single policy controls multiple agents through a joint action space.
     The agents move in a shared grid and try to reach one food source.
 
-    Optional fixed obstacles can be added to study obstacle-aware
-    multi-agent foraging.
+    The environment supports:
+    - no obstacles;
+    - fixed obstacles;
+    - randomized reachable obstacles.
     """
 
     metadata = {"render_modes": ["human"]}
@@ -22,25 +26,47 @@ class MultiAgentForagingEnv(gym.Env):
         num_agents=2,
         max_steps=50,
         obstacles=None,
+        random_obstacles=False,
+        num_obstacles=3,
     ):
         super().__init__()
 
         if num_agents < 2:
             raise ValueError("num_agents must be at least 2.")
 
+        if obstacles is not None and random_obstacles:
+            raise ValueError(
+                "Use either fixed obstacles or random_obstacles=True, not both."
+            )
+
         self.grid_size = grid_size
         self.num_agents = num_agents
         self.max_steps = max_steps
+        self.random_obstacles = random_obstacles
 
         if obstacles is None:
-            self.obstacles = []
+            self.fixed_obstacles = []
         else:
-            self.obstacles = [
+            self.fixed_obstacles = [
                 np.array(obstacle, dtype=np.int32)
                 for obstacle in obstacles
             ]
 
-        self.num_obstacles = len(self.obstacles)
+        if self.random_obstacles:
+            self.num_obstacles = num_obstacles
+        else:
+            self.num_obstacles = len(self.fixed_obstacles)
+
+        required_cells = self.num_agents + 1 + self.num_obstacles
+        available_cells = self.grid_size * self.grid_size
+
+        if required_cells > available_cells:
+            raise ValueError(
+                "Grid is too small for the requested number of agents, "
+                "food sources, and obstacles."
+            )
+
+        self.obstacles = [obstacle.copy() for obstacle in self.fixed_obstacles]
 
         self.num_actions_per_agent = 4
 
@@ -71,26 +97,24 @@ class MultiAgentForagingEnv(gym.Env):
         super().reset(seed=seed)
 
         self.current_step = 0
-        self.agent_positions = []
 
-        # Spawn agents in unique valid cells.
-        while len(self.agent_positions) < self.num_agents:
-            position = self.np_random.integers(
-                low=0,
-                high=self.grid_size,
-                size=2,
-                dtype=np.int32,
-            )
+        if self.random_obstacles:
+            valid_environment = False
 
-            if self._is_obstacle(position):
-                continue
+            while not valid_environment:
+                self.obstacles = self._generate_random_obstacles()
+                self.agent_positions = self._generate_agent_positions()
+                self.food_pos = self._generate_food_position()
 
-            if tuple(position) in [tuple(pos) for pos in self.agent_positions]:
-                continue
+                valid_environment = self._is_food_reachable()
+        else:
+            self.obstacles = [
+                obstacle.copy()
+                for obstacle in self.fixed_obstacles
+            ]
 
-            self.agent_positions.append(position)
-
-        self.food_pos = self._generate_food_position()
+            self.agent_positions = self._generate_agent_positions()
+            self.food_pos = self._generate_food_position()
 
         observation = self._get_obs()
         info = {}
@@ -198,6 +222,45 @@ class MultiAgentForagingEnv(gym.Env):
 
         return individual_actions
 
+    def _generate_agent_positions(self):
+        agent_positions = []
+
+        while len(agent_positions) < self.num_agents:
+            position = self.np_random.integers(
+                low=0,
+                high=self.grid_size,
+                size=2,
+                dtype=np.int32,
+            )
+
+            if self._is_obstacle(position):
+                continue
+
+            if tuple(position) in [tuple(pos) for pos in agent_positions]:
+                continue
+
+            agent_positions.append(position)
+
+        return agent_positions
+
+    def _generate_random_obstacles(self):
+        obstacles = []
+
+        while len(obstacles) < self.num_obstacles:
+            obstacle = self.np_random.integers(
+                low=0,
+                high=self.grid_size,
+                size=2,
+                dtype=np.int32,
+            )
+
+            if tuple(obstacle) in [tuple(existing) for existing in obstacles]:
+                continue
+
+            obstacles.append(obstacle)
+
+        return obstacles
+
     def _generate_food_position(self):
         while True:
             food_pos = self.np_random.integers(
@@ -251,6 +314,70 @@ class MultiAgentForagingEnv(gym.Env):
             np.array_equal(position, obstacle)
             for obstacle in self.obstacles
         )
+
+    def _is_food_reachable(self):
+        """
+        Check whether the food can be reached from at least one agent
+        using breadth-first search.
+
+        This validates that the obstacle layout does not create an
+        impossible environment.
+        """
+        goal = tuple(self.food_pos)
+        obstacle_set = {tuple(obstacle) for obstacle in self.obstacles}
+
+        for agent_position in self.agent_positions:
+            start = tuple(agent_position)
+
+            if self._has_path_to_food(
+                start=start,
+                goal=goal,
+                obstacle_set=obstacle_set,
+            ):
+                return True
+
+        return False
+
+    def _has_path_to_food(self, start, goal, obstacle_set):
+        queue = deque([start])
+        visited = {start}
+
+        directions = [
+            (0, -1),  # up
+            (0, 1),   # down
+            (-1, 0),  # left
+            (1, 0),   # right
+        ]
+
+        while queue:
+            current_x, current_y = queue.popleft()
+
+            if (current_x, current_y) == goal:
+                return True
+
+            for dx, dy in directions:
+                next_x = current_x + dx
+                next_y = current_y + dy
+                next_position = (next_x, next_y)
+
+                inside_grid = (
+                    0 <= next_x < self.grid_size
+                    and 0 <= next_y < self.grid_size
+                )
+
+                if not inside_grid:
+                    continue
+
+                if next_position in obstacle_set:
+                    continue
+
+                if next_position in visited:
+                    continue
+
+                visited.add(next_position)
+                queue.append(next_position)
+
+        return False
 
     def _has_collision(self, positions):
         position_tuples = [tuple(pos) for pos in positions]
