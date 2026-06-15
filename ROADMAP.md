@@ -2,7 +2,7 @@
 
 This roadmap defines the planned development path for the `swarm_rl-foraging` project.
 
-The project is structured as a progressive reinforcement learning study, where the environment complexity is increased step by step.
+The project is structured as a progressive reinforcement learning study. The environment complexity is increased step by step, starting from a single-agent grid-world and progressing toward simple swarm-like multi-agent foraging.
 
 ---
 
@@ -10,7 +10,7 @@ The project is structured as a progressive reinforcement learning study, where t
 
 The project investigates how PPO performance changes under increasing environment complexity.
 
-The main research themes are:
+Main research themes:
 
 * baseline comparison;
 * learning efficiency;
@@ -21,493 +21,575 @@ The main research themes are:
 * training-duration sensitivity;
 * oracle validation;
 * failure-case analysis;
+* deterministic vs stochastic policy deployment;
 * multi-agent scalability.
 
 The final goal is to present a controlled experimental study of reinforcement learning for foraging behavior, progressing from a single-agent system toward a simple swarm-like multi-agent setup.
 
----
+Important framing:
 
-## Completed Work
+```text
+This project implements a bio-inspired reinforcement-learning controller based on PPO for a custom foraging/navigation environment, and extends it toward swarm-like multi-agent coordination.
+```
 
-### Day 1 - Base Environment
-
-Status: completed
-
-Implemented:
-
-* custom Gymnasium environment;
-* 2D grid-world;
-* random food spawning;
-* agent movement;
-* reward and termination logic;
-* text rendering.
+The project should not be presented as inventing PPO. It should be presented as implementing, adapting, and experimentally analyzing PPO in a custom bio-inspired foraging task.
 
 ---
 
-### Day 2 - PPO Training
+# Completed Work
+
+## Experiment 1 - Random Agent Baseline
 
 Status: completed
 
-Implemented:
-
-* PPO training pipeline;
-* Stable-Baselines3 integration;
-* model saving.
-
-Model:
-
-`models/ppo_foraging.zip`
-
----
-
-### Day 3 - Evaluation and Random Baseline
-
-Status: completed
-
-Implemented:
-
-* random agent baseline;
-* PPO evaluation;
-* baseline comparison.
+Evaluated a random policy in the basic 5x5 single-agent foraging environment.
 
 Key result:
 
-| Agent | Success Rate | Average Steps |
-|---|---:|---:|
-| Random Agent | 63% | 30.55 |
-| PPO Agent | 100% | 4.26 |
+| Agent | Success Rate | Average Reward | Average Episode Length |
+|---|---:|---:|---:|
+| Random Agent | 63.00% | 0.63 | 30.55 |
 
 ---
 
-### Day 4 - Grid-Size Generalization
+## Experiment 2 - PPO Baseline
 
 Status: completed
 
-Experiment:
-
-Train PPO on 5x5 and evaluate on 10x10.
+Trained PPO on the basic 5x5 single-agent foraging environment.
 
 Key result:
 
-| Experiment | Success Rate | Average Steps |
-|---|---:|---:|
-| PPO 5x5 evaluated on 10x10 | 96% | 12.88 |
-
----
-
-### Day 5 - Results and Visualization
-
-Status: completed
-
-Implemented:
-
-* results folder;
-* plots;
-* report metrics;
-* performance comparison figures.
-
----
-
-### Day 6 - Fixed Obstacles and State Representation
-
-Status: completed
-
-Implemented:
-
-* fixed obstacles;
-* obstacle collision handling;
-* obstacle rendering;
-* PPO training with obstacles;
-* state augmentation.
-
-Key result:
-
-| Experiment | Success Rate | Average Steps |
-|---|---:|---:|
-| PPO fixed obstacles 50k | 70% | 17.35 |
-| PPO fixed obstacles + state augmentation 50k | 87% | 9.94 |
+| Agent | Training Timesteps | Success Rate | Average Reward | Average Episode Length |
+|---|---:|---:|---:|---:|
+| PPO | 10,000 | 100.00% | 1.00 | 4.26 |
 
 Main finding:
 
-Adding obstacle coordinates to the observation improved performance from 70% to 87%.
+PPO strongly outperformed the random baseline in the basic foraging task.
 
 ---
 
-### Day 7 - Randomized Obstacles
+## Experiment 3 - Grid-Size Generalization
 
 Status: completed
 
+Evaluated the PPO model trained on 5x5 in a larger 10x10 no-obstacle grid.
+
+Key result:
+
+| Training Grid | Evaluation Grid | Success Rate | Average Reward | Average Episode Length |
+|---|---|---:|---:|---:|
+| 5x5 | 10x10 | 96.00% | 0.96 | 12.88 |
+
+Main finding:
+
+The PPO policy generalized reasonably well to a larger grid, but the average episode length increased.
+
+---
+
+## Experiment 4 - Fixed Obstacles, PPO 20k
+
+Status: completed
+
+Introduced fixed obstacles into the single-agent environment.
+
+Key result:
+
+| Environment | Training Timesteps | Success Rate | Average Reward | Average Episode Length |
+|---|---:|---:|---:|---:|
+| 5x5 fixed obstacles | 20,000 | 79.00% | 0.79 | 13.34 |
+
+---
+
+## Experiment 5 - Fixed Obstacles, PPO 50k
+
+Status: completed
+
+Trained PPO longer in the fixed-obstacle single-agent environment.
+
+Key result:
+
+| Environment | Training Timesteps | Success Rate | Average Reward | Average Episode Length |
+|---|---:|---:|---:|---:|
+| 5x5 fixed obstacles | 50,000 | 70.00% | 0.70 | 17.35 |
+
+Main finding:
+
+Increasing training time alone did not improve performance.
+
+---
+
+## Experiment 6 - Fixed Obstacles with State Augmentation
+
+Status: completed
+
+Added obstacle coordinates to the observation space.
+
+Key result:
+
+| Environment | Observation | Training Timesteps | Success Rate | Average Reward | Average Episode Length |
+|---|---|---:|---:|---:|---:|
+| 5x5 fixed obstacles | agent, food, obstacles | 50,000 | 87.00% | 0.87 | 9.94 |
+
+Main finding:
+
+Adding obstacle coordinates to the state representation improved fixed-obstacle PPO performance from 70% to 87%.
+
+---
+
+## Experiment 7 - Reachability Validation for Randomized Obstacles
+
+Status: completed
+
+Implemented randomized obstacle generation with BFS reachability validation.
+
+Key result:
+
+| Episodes Tested | Reachable Environments | Unreachable Environments | Reachability Rate |
+|---:|---:|---:|---:|
+| 1000 | 1000 | 0 | 100.00% |
+
+Main finding:
+
+Randomized obstacle environments were guaranteed to be solvable, making later evaluations scientifically cleaner.
+
+---
+
+## Experiment 8 - Fixed-Obstacle PPO Evaluated on Randomized Obstacles
+
+Status: completed
+
+Evaluated the best fixed-obstacle PPO model on randomized reachable obstacle environments.
+
+Key result:
+
+| Training Environment | Evaluation Environment | Success Rate | Average Reward | Average Episode Length |
+|---|---|---:|---:|---:|
+| Fixed obstacles | Randomized obstacles | 65.50% | 0.66 | 19.59 |
+
+Main finding:
+
+The fixed-obstacle PPO policy did not fully generalize to randomized obstacle layouts.
+
+---
+
+## Experiment 9 - Randomized Obstacles PPO 50k
+
+Status: completed
+
+Trained PPO directly on randomized reachable obstacle environments.
+
+Key result:
+
+| Training Timesteps | Success Rate | Average Reward | Average Episode Length |
+|---:|---:|---:|---:|
+| 50,000 | 70.90% | 0.71 | 17.14 |
+
+---
+
+## Experiment 10 - Randomized Obstacles PPO 100k
+
+Status: completed
+
+Increased randomized-obstacle training to 100k timesteps.
+
+Key result:
+
+| Training Timesteps | Success Rate | Average Reward | Average Episode Length |
+|---:|---:|---:|---:|
+| 100,000 | 76.30% | 0.76 | 14.74 |
+
+Main finding:
+
+Increasing training from 50k to 100k improved robustness and efficiency.
+
+---
+
+## Experiment 11 - Randomized Obstacles PPO 200k
+
+Status: completed
+
+Increased randomized-obstacle training to 200k timesteps.
+
+Key result:
+
+| Training Timesteps | Deterministic Success Rate | Average Reward | Average Episode Length |
+|---:|---:|---:|---:|
+| 200,000 | 76.20% | 0.76 | 14.82 |
+
+Main finding:
+
+The deterministic success rate plateaued around 76%.
+
+---
+
+## Experiment 12 - BFS Oracle Baseline on Randomized Obstacles
+
+Status: completed
+
+Evaluated a BFS shortest-path oracle on randomized obstacle environments.
+
+Key result:
+
+| Method | Success Rate | Average Shortest Path Length | Failed Seeds |
+|---|---:|---:|---|
+| BFS oracle | 100.00% | 4.29 | `[]` |
+
+Main finding:
+
+The task was solvable; PPO failures were not caused by impossible environments.
+
+---
+
+## Experiment 13 - PPO Failure-Case Analysis on Randomized Obstacles
+
+Status: completed
+
+Analyzed failed deterministic PPO episodes.
+
+Key result:
+
+| Model | Success Rate | Failure Rate | Failures | Avg No-Move Steps per Failed Episode |
+|---|---:|---:|---:|---:|
+| PPO random obstacles 100k | 76.30% | 23.70% | 237 | 48.45 |
+
+Main finding:
+
+Failed deterministic PPO episodes were dominated by repeated no-move behavior.
+
+---
+
+## Experiment 14 - PPO Policy Sampling Mode Analysis
+
+Status: completed
+
+Compared deterministic and stochastic policy deployment for randomized-obstacle PPO models.
+
+Key result:
+
+| Model | Deterministic Success | Stochastic Mean Success | Stochastic Std | Mean Episode Length |
+|---|---:|---:|---:|---:|
+| PPO Random Obstacles 100k | 76.30% | 96.92% | 0.52% | 7.65 |
+| PPO Random Obstacles 200k | 76.20% | 97.58% | 0.29% | 7.17 |
+
+Main finding:
+
+Stochastic policy sampling greatly improved performance and reduced repeated no-move failures.
+
+---
+
+## Experiment 15 - Random-Obstacle Grid-Size Generalization
+
+Status: completed
+
+Evaluated the best randomized-obstacle PPO policy on 5x5 and 10x10 randomized-obstacle environments.
+
+Key result:
+
+| Grid | Oracle Success | PPO Deterministic Success | PPO Stochastic Mean Success | PPO Stochastic Average Episode Length |
+|---|---:|---:|---:|---:|
+| 5x5 | 100.00% | 76.20% | 97.58% | 7.17 |
+| 10x10 | 100.00% | 66.90% | 98.08% | 12.60 |
+
+Main finding:
+
+The stochastic PPO policy trained on 5x5 randomized obstacles generalized successfully to a larger 10x10 randomized-obstacle environment.
+
+---
+
+## Experiment 16 - Multi-Agent No-Obstacle Baselines
+
+Status: completed
+
+Created and evaluated no-obstacle multi-agent baselines for 2 and 3 agents.
+
+Key result:
+
+| Agents | Method | Success Rate | Average Reward | Average Episode Length |
+|---:|---|---:|---:|---:|
+| 2 | Random baseline | 84.30% | 0.84 | 21.30 |
+| 2 | Greedy decentralized baseline | 100.00% | 1.00 | 2.41 |
+| 3 | Random baseline | 92.10% | 0.92 | 16.46 |
+| 3 | Greedy decentralized baseline | 99.00% | 0.99 | 2.52 |
+
+Main finding:
+
+Adding more agents improved random exploration, while the greedy baseline was very strong without obstacles.
+
+---
+
+## Experiment 17 - Multi-Agent PPO, 2 Agents
+
+Status: completed
+
+Trained centralized PPO with 2 agents in the no-obstacle multi-agent environment.
+
+Key result:
+
+| Method | Success Rate | Average Reward | Average Episode Length |
+|---|---:|---:|---:|
+| Random baseline | 84.30% | 0.84 | 21.30 |
+| Greedy decentralized baseline | 100.00% | 1.00 | 2.41 |
+| PPO deterministic | 98.90% | 0.99 | 2.94 |
+| PPO stochastic | 100.00% | 1.00 | 2.58 |
+
+Main finding:
+
+The centralized PPO controller successfully learned the two-agent no-obstacle foraging task.
+
+---
+
+## Experiment 18 - Multi-Agent Grid-Size Generalization
+
+Status: completed
+
+Evaluated the two-agent PPO policy trained on 5x5 in both 5x5 and 10x10 no-obstacle environments.
+
+Key result:
+
+| Grid | Random Success | Greedy Success | PPO Deterministic Success | PPO Stochastic Success | PPO Stochastic Average Episode Length |
+|---|---:|---:|---:|---:|---:|
+| 5x5 | 84.30% | 100.00% | 98.90% | 100.00% | 2.57 |
+| 10x10 | 37.90% | 100.00% | 96.00% | 99.88% | 5.64 |
+
+Main finding:
+
+The two-agent PPO policy trained on 5x5 generalized very well to a larger 10x10 no-obstacle environment.
+
+---
+
+## Experiment 19 - Multi-Agent Fixed-Obstacle Environment
+
+Status: completed
+
+Added optional fixed-obstacle support to the centralized multi-agent environment.
+
 Implemented:
 
-* randomized obstacle generation;
-* obstacle overlap prevention;
-* food-obstacle overlap prevention;
-* reachability validation;
-* fixed-obstacle PPO evaluation on randomized environments.
+* optional `obstacles` argument in `MultiAgentForagingEnv`;
+* obstacle coordinates in the observation;
+* obstacle-aware agent and food spawning;
+* movement blocking into obstacles;
+* preservation of collision prevention and position-swap prevention;
+* backward compatibility when `obstacles=None`.
 
-Key validation:
+Setup:
+
+| Field | Value |
+|---|---|
+| Environment | `MultiAgentForagingEnv` |
+| Grid Size | 5x5 |
+| Number of Agents | 2 |
+| Fixed Obstacles | `(2, 1)`, `(2, 2)`, `(2, 3)` |
+| Joint Action Space | `4^2 = 16` |
+| Observation Size | 12 |
+| Updated File | `env/multi_agent_foraging_env.py` |
+| Test File | `tests/test_multi_agent_obstacles.py` |
+
+Testing:
 
 | Test | Result |
-|---|---:|
-| Reachable randomized environments | 1000 / 1000 |
-
-Key result:
-
-| Model | Evaluation Environment | Success Rate | Average Steps |
-|---|---|---:|---:|
-| PPO fixed obstacles | Randomized obstacles | 65.50% | 19.59 |
+|---|---|
+| `tests/test_multi_agent_obstacles.py` | 6 passed |
+| `tests/test_multi_agent_env.py` | passed |
 
 Main finding:
 
-The fixed-obstacle PPO policy does not fully generalize to randomized obstacle layouts.
+Fixed-obstacle support was added without breaking the previous no-obstacle multi-agent workflow.
 
 ---
 
-### Day 8 - PPO on Randomized Obstacles
+## Experiment 20 - Multi-Agent Fixed-Obstacle Baselines
 
 Status: completed
 
-Implemented:
-
-* PPO training on randomized obstacles;
-* 50k randomized-obstacle model;
-* 100k randomized-obstacle model;
-* controlled evaluation on the same 1000 seeded randomized environments.
+Evaluated random and greedy obstacle-aware baselines in the 2-agent fixed-obstacle environment.
 
 Key result:
 
-| Model | Success Rate | Average Steps |
-|---|---:|---:|
-| PPO fixed obstacles on random obstacles | 65.50% | 19.59 |
-| PPO random obstacles 50k | 70.90% | 17.14 |
-| PPO random obstacles 100k | 76.30% | 14.74 |
-
-Main finding:
-
-Training directly on randomized obstacles improves generalization, and increasing training from 50k to 100k improves robustness and efficiency.
-
----
-
-### Day 9 - Randomized Obstacle PPO 200k
-
-Status: completed
-
-Implemented:
-
-* 200k PPO training on randomized reachable obstacle environments;
-* separate 200k randomized-obstacle model;
-* updated seeded comparison script;
-* controlled comparison between fixed-obstacle, 50k, 100k, and 200k models on the same 1000 seeded randomized environments.
-
-Model:
-
-`models/ppo_foraging_random_obstacles_200k.zip`
-
-Key result:
-
-| Model | Success Rate | Average Reward | Average Steps |
+| Method | Success Rate | Average Reward | Average Episode Length |
 |---|---:|---:|---:|
-| PPO fixed obstacles on random obstacles | 65.50% | 0.66 | 19.59 |
-| PPO random obstacles 50k | 70.90% | 0.71 | 17.14 |
-| PPO random obstacles 100k | 76.30% | 0.76 | 14.74 |
-| PPO random obstacles 200k | 76.20% | 0.76 | 14.82 |
+| Random baseline | 76.40% | 0.76 | 24.63 |
+| Greedy obstacle-aware baseline | 93.10% | 0.93 | 5.83 |
 
 Main finding:
 
-Increasing randomized-obstacle training from 100k to 200k timesteps did not produce a meaningful improvement.
-
-The 100k model achieved a success rate of 76.30%, while the 200k model achieved 76.20%. The average episode length also remained almost unchanged.
-
-This suggests that, under the current sparse reward function and observation design, the randomized-obstacle PPO policy reaches a performance plateau around 100k timesteps.
+Fixed obstacles made the multi-agent task harder than the no-obstacle case. The greedy obstacle-aware baseline was strong but not optimal because it uses local Manhattan-distance decisions rather than full path planning.
 
 ---
 
-### Post-Day 9 - BFS Oracle and PPO Failure-Case Analysis
+## Experiment 21 - Multi-Agent Fixed-Obstacle PPO
 
 Status: completed
 
-Implemented:
+Trained and evaluated a centralized PPO controller in the same 2-agent fixed-obstacle environment used for the Experiment 20 baselines.
 
-* BFS oracle evaluation on 1000 seeded randomized-obstacle environments;
-* shortest-path baseline for environment solvability validation;
-* PPO failure-case analysis using the 100k randomized-obstacle model;
-* saved example failure cases in `results/random_obstacle_failure_cases.txt`.
+Setup:
 
-BFS oracle result:
-
-| Method | Success Rate | Average Shortest Path Length | Average Steps | Failed Seeds |
-|---|---:|---:|---:|---|
-| BFS oracle | 100.00% | 4.29 | 4.29 | `[]` |
-
-PPO failure-case analysis result:
-
-| Model | Success Rate | Failure Rate | Failures | Avg No-Move Steps per Failed Episode | Avg Repeated-Position Steps per Failed Episode |
-|---|---:|---:|---:|---:|---:|
-| PPO random obstacles 100k | 76.30% | 23.70% | 237 | 48.45 | 48.45 |
-
-Main finding:
-
-The BFS oracle confirmed that all evaluated randomized-obstacle environments were solvable.
-
-PPO failure-case analysis showed that failed episodes were dominated by repeated no-move behavior. This suggests that PPO failures are not caused by unreachable food positions, but by limitations of the learned deterministic policy under sparse rewards and randomized obstacle layouts.
-
----
-
-### Post-Day 9 - PPO Policy Sampling Robustness Analysis
-
-Status: completed
-
-Implemented:
-
-* deterministic vs stochastic PPO evaluation;
-* robustness evaluation across 10 stochastic action seeds;
-* comparison between 100k and 200k randomized-obstacle PPO models;
-* saved results to `results/policy_sampling_robustness_summary.txt`.
+| Field | Value |
+|---|---|
+| Environment | `MultiAgentForagingEnv` |
+| Grid Size | 5x5 |
+| Number of Agents | 2 |
+| Max Steps | 50 |
+| Fixed Obstacles | `(2, 1)`, `(2, 2)`, `(2, 3)` |
+| Control Type | Centralized PPO |
+| Joint Action Space | `4^2 = 16` |
+| Observation Size | 12 |
+| Training Timesteps | 100,000 |
+| Model | `models/ppo_multi_agent_2agents_obstacles.zip` |
+| Training Script | `train/train_ppo_multi_agent_2agents_obstacles.py` |
+| Evaluation Script | `evaluation/evaluate_multi_agent_obstacle_ppo.py` |
+| Output File | `results/multi_agent_obstacle_ppo_summary.txt` |
 
 Key result:
 
-| Model | Deterministic Success | Stochastic Mean Success | Stochastic Std | Mean Episode Length | Mean No-Move Steps |
-|---|---:|---:|---:|---:|---:|
-| PPO random obstacles 100k | 76.30% | 96.92% | 0.52% | 7.65 | 2.80 |
-| PPO random obstacles 200k | 76.20% | 97.58% | 0.29% | 7.17 | 2.51 |
+| Method | Success Rate | Average Reward | Average Episode Length |
+|---|---:|---:|---:|
+| Random baseline | 76.40% | 0.76 | 24.63 |
+| Greedy obstacle-aware baseline | 93.10% | 0.93 | 5.83 |
+| PPO deterministic | 92.80% | 0.93 | 6.08 |
+| PPO stochastic | 100.00% | 1.00 | 3.32 |
 
 Main finding:
 
-Deterministic evaluation underestimated PPO performance because the policy could repeatedly select invalid or ineffective actions in unchanged states.
-
-Stochastic policy sampling greatly reduced no-move behavior and improved performance. The 200k randomized-obstacle PPO model achieved the best learned result so far, reaching 97.58% mean success across 10 action seeds.
-
-This result brings PPO close to the 100% BFS oracle baseline without changing the environment, reward function, or trained model.
+The centralized PPO controller successfully learned the fixed-obstacle multi-agent foraging task. Deterministic PPO performed close to the greedy obstacle-aware baseline, while stochastic PPO achieved the best result with 100% success and shorter average episode length.
 
 ---
 
-### Day 10 - Random-Obstacle Grid-Size Generalization
+# Next Planned Experiments
 
-Status: completed
-
-Implemented:
-
-* evaluation of the best randomized-obstacle PPO model on 5x5 and 10x10 randomized-obstacle environments;
-* BFS oracle validation on both grid sizes;
-* deterministic PPO evaluation;
-* stochastic PPO evaluation across 10 action seeds;
-* saved results to `results/random_obstacle_grid_generalization_summary.txt`.
-
-Model:
-
-`models/ppo_foraging_random_obstacles_200k.zip`
-
-Recommended evaluation mode:
-
-`deterministic=False`
-
-Key result:
-
-| Grid | Oracle Success | PPO Deterministic Success | PPO Stochastic Mean Success | Stochastic Std | PPO Stochastic Avg Length |
-|---|---:|---:|---:|---:|---:|
-| 5x5 | 100.00% | 76.20% | 97.58% | 0.29% | 7.17 |
-| 10x10 | 100.00% | 66.90% | 98.08% | 0.19% | 12.60 |
-
-Main finding:
-
-The stochastic PPO policy trained on 5x5 randomized obstacles generalized successfully to the larger 10x10 randomized-obstacle environment.
-
-The 10x10 grid required longer paths, increasing the average stochastic PPO episode length from 7.17 to 12.60 steps. However, the success rate remained near-oracle, reaching 98.08% on 10x10.
-
-This suggests that, with stochastic action sampling, the learned PPO policy transferred well to a larger grid when the obstacle count and observation structure remained compatible with the trained model.
-
----
-
-## Next Planned Work
-
-## Day 11 - Multi-Agent Environment
+## Experiment 22 - Multi-Agent Random-Obstacle Environment
 
 Status: next
 
 ### Goal
 
-Create a simple multi-agent version of the foraging environment.
+Extend the multi-agent environment to support randomized obstacle layouts.
 
-### Scientific Question
+### Planned Features
 
-Can a centralized PPO policy control multiple agents in a shared foraging environment?
+* `random_obstacles=True`;
+* `num_obstacles=3`;
+* obstacle generation at reset;
+* no overlap between obstacles, agents, and food;
+* BFS reachability validation so that at least one agent can reach the food;
+* tests for randomized obstacle behavior.
 
-### Initial Setup
+### Planned Files
 
-* 2 agents;
-* 1 food source;
-* 5x5 grid;
-* no obstacles initially;
-* centralized control;
-* joint action space.
+| Purpose | File |
+|---|---|
+| Environment update | `env/multi_agent_foraging_env.py` |
+| Tests | `tests/test_multi_agent_random_obstacles.py` |
 
-### Planned Environment File
+### Scientific Motivation
 
-`env/multi_agent_foraging_env.py`
-
-### Planned Observation Space
-
-Possible observation:
-
-```text
-agent1_x, agent1_y,
-agent2_x, agent2_y,
-food_x, food_y
-```
-
-### Planned Action Space
-
-For 2 agents, each with 4 actions:
-
-```text
-4 x 4 = 16 joint actions
-```
-
-### Planned Tasks
-
-1. Implement the multi-agent environment.
-2. Add rendering for two agents.
-3. Add tests for reset, step, boundaries, and food collection.
-4. Create a random multi-agent baseline.
-5. Train PPO using centralized control.
-6. Evaluate performance.
+Fixed obstacles test learning in a controlled layout. Random obstacles test whether the multi-agent system can handle changing spatial constraints.
 
 ---
 
-## Day 12 - Multi-Agent Evaluation and Scalability
+## Experiment 23 - Multi-Agent Random-Obstacle PPO, 5x5
 
 Status: planned
 
 ### Goal
 
-Evaluate whether adding agents improves foraging efficiency.
+Train and evaluate a centralized PPO policy with 2 agents in a 5x5 environment with randomized reachable obstacles.
 
-### Scientific Questions
+### Planned Outputs
 
-* Does adding a second agent improve success rate?
-* Does adding a second agent reduce average episode length?
-* Does the multi-agent setup create coordination challenges?
-* Can the approach scale beyond two agents?
+| Output | Path |
+|---|---|
+| Training script | `train/train_ppo_multi_agent_2agents_random_obstacles.py` |
+| Evaluation script | `evaluation/evaluate_multi_agent_random_obstacle_ppo.py` |
+| Model | `models/ppo_multi_agent_2agents_random_obstacles.zip` |
+| Results summary | `results/multi_agent_random_obstacle_ppo_summary.txt` |
 
-### Planned Experiments
+### Planned Evaluation
 
-| Experiment | Agents | Policy | Environment |
-|---|---:|---|---|
-| Random baseline | 2 | Random | 5x5 |
-| PPO multi-agent | 2 | PPO | 5x5 |
-| Optional scalability | 3 | PPO | 5x5 |
+Evaluate:
 
-### Planned Metrics
-
-* success rate;
-* average reward;
-* average episode length;
-* possibly collected resources per agent;
-* qualitative trajectory examples.
+* random baseline;
+* greedy obstacle-aware baseline;
+* PPO deterministic;
+* PPO stochastic.
 
 ---
 
-## Final Reporting Phase
+## Experiment 24 - Multi-Agent Random-Obstacle Grid-Size Generalization
 
 Status: planned
 
 ### Goal
 
-Prepare the final project report and organize all results.
+Evaluate whether the PPO policy trained on 5x5 randomized obstacles generalizes to a larger 10x10 randomized-obstacle environment with 2 agents.
 
-### Planned Tasks
+### Planned Output
 
-1. Update `README.md`.
-2. Update `PROJECT_CONTEXT.md`.
-3. Update `EXPERIMENT_LOG.md`.
-4. Generate final plots.
-5. Create final summary tables.
-6. Add trajectory or behavior analysis.
-7. Discuss limitations.
-8. Prepare final conclusions.
+`results/multi_agent_random_obstacle_grid_generalization_summary.txt`
 
-### Important Report Sections
+### Scientific Motivation
 
-The final report should include:
-
-1. Introduction
-2. Environment design
-3. Reinforcement learning method
-4. Experimental setup
-5. Results
-6. Sensitivity analysis
-7. Oracle baseline and failure-case analysis
-8. Multi-agent extension
-9. Discussion
-10. Limitations
-11. Conclusion
+This experiment tests whether the learned multi-agent policy transfers to larger spatial environments while still handling variable obstacle layouts.
 
 ---
 
-## Priority List for a High-Quality Final Project
+## Optional Experiment - 3-Agent Scalability
 
-### Essential
+Status: optional
 
-* Implement a working 2-agent environment.
-* Compare multi-agent PPO against a random baseline.
-* Generate final plots and summary tables.
-* Write clear scientific conclusions.
+### Goal
 
-### Completed Quality Improvements
+Test scalability from 2 agents to 3 agents after the 2-agent random-obstacle experiments are stable and documented.
 
-* Completed 200k randomized-obstacle training sensitivity analysis.
-* Added BFS oracle baseline for environment solvability validation.
-* Added PPO failure-case analysis for learned-behavior interpretation.
-* Added policy sampling robustness analysis showing near-oracle stochastic PPO performance.
-* Completed random-obstacle 10x10 generalization with near-oracle stochastic PPO performance.
+Important difference:
 
-### Strongly Recommended
+| Agents | Joint Action Space |
+|---:|---:|
+| 2 | `4^2 = 16` |
+| 3 | `4^3 = 64` |
 
-* Add trajectory examples for successful PPO episodes.
-* Analyze success and failure cases in the final report.
-* Explain the learned behavior qualitatively.
-* Keep all experiments reproducible and documented.
-
-### Optional Extensions
-
-* 3-agent scalability.
-* Reward shaping.
-* Invalid-action penalty.
-* Obstacle density variation.
-* Larger-grid training from scratch.
+The 3-agent setting is optional because the larger centralized joint action space may require additional training and interpretation.
 
 ---
 
-## Current Best Models
+## Final Documentation Phase
 
-Best fixed-obstacle model:
+Status: planned
 
-`models/ppo_foraging_obstacles_state.zip`
+### Goal
 
-Best randomized-obstacle model:
+Prepare the final project submission.
 
-`models/ppo_foraging_random_obstacles_200k.zip`
+Planned work:
 
-Recommended evaluation mode:
+* update final plots;
+* update `README.md`;
+* update `PROJECT_CONTEXT.md`;
+* update `ROADMAP.md`;
+* clean `EXPERIMENT_LOG.md`;
+* prepare final report tables;
+* write final scientific interpretation.
 
-`deterministic=False`
+The final report should emphasize:
 
-Under deterministic evaluation, the 100k and 200k models both achieved about 76% success. Under stochastic evaluation, the 200k model achieved 97.58% mean success on 5x5 and 98.08% mean success on 10x10, making it the best randomized-obstacle policy so far.
+* reproducible experimental setup;
+* clear comparison against baselines;
+* sensitivity analysis;
+* analysis of learned behavior;
+* deterministic vs stochastic PPO deployment;
+* multi-agent scalability and limitations.
 
 ---
 
-## Current Main Conclusion
+# Current Priority
 
-The current results show that state representation, environment randomization, policy deployment mode, and grid-size scaling all affect PPO performance.
+The next concrete development step is:
 
-Adding obstacle coordinates to the observation space improved fixed-obstacle performance from 70% to 87%.
+```text
+Experiment 22 - Multi-Agent Random-Obstacle Environment
+```
 
-Randomized obstacle training improved deterministic generalization from 65.50% to 76.30%, and reduced the average episode length from 19.59 to 14.74 steps.
-
-Deterministic evaluation of the 100k and 200k randomized-obstacle models initially suggested a performance plateau around 76%. However, the BFS oracle achieved 100% success on the same environments, confirming that the task was fully solvable. Failure-case analysis then showed that deterministic PPO failures were dominated by repeated no-move behavior.
-
-Policy sampling analysis showed that stochastic action selection greatly reduced this failure mode. The 200k randomized-obstacle PPO model reached 97.58% mean success across 10 action seeds on 5x5, close to the 100% BFS oracle baseline.
-
-Random-obstacle grid-size generalization showed that the same 200k stochastic PPO policy transferred successfully to 10x10 randomized obstacles, achieving 98.08% mean success. The larger grid increased the average episode length from 7.17 to 12.60 steps, but did not reduce the success rate.
-
-Further work will test whether multi-agent extensions improve foraging efficiency and scalability.
+Do not start 3-agent experiments yet. Do not train random-obstacle multi-agent PPO until the randomized obstacle environment and its tests are completed.
