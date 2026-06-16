@@ -1,0 +1,47 @@
+MULTI-AGENT RANDOM-OBSTACLE PPO EVALUATION
+=========================================
+
+Environment setup:
+- Grid size: 5x5
+- Number of agents: 2
+- Max steps: 50
+- Random obstacles: True
+- Number of obstacles: 3
+- Control type: centralized joint action space
+- Joint action space: 16 actions
+- Observation size: 12
+
+Model: models/ppo_multi_agent_2agents_random_obstacles.zip
+Evaluation episodes: 1000 seeded episodes
+
+Baselines:
+Random baseline: 81.50% success, average reward 0.81, average episode length 22.24
+Greedy obstacle-aware baseline: 93.50% success, average reward 0.94, average episode length 5.45
+
+PPO deterministic:
+Success Rate: 82.40%
+Average Reward: 0.82
+Average Episode Length: 10.77
+
+PPO stochastic:
+Mean Success Rate: 99.40%
+Success Rate Std: 0.13%
+Min Success Rate: 99.20%
+Max Success Rate: 99.60%
+Mean Average Reward: 0.99
+Mean Average Episode Length: 3.91
+
+Per-action-seed stochastic results:
+Action Seed 0: Success Rate 99.40%, Average Reward 0.99, Average Episode Length 3.90
+Action Seed 1: Success Rate 99.20%, Average Reward 0.99, Average Episode Length 3.96
+Action Seed 2: Success Rate 99.20%, Average Reward 0.99, Average Episode Length 3.98
+Action Seed 3: Success Rate 99.60%, Average Reward 1.00, Average Episode Length 3.76
+Action Seed 4: Success Rate 99.30%, Average Reward 0.99, Average Episode Length 3.91
+Action Seed 42: Success Rate 99.40%, Average Reward 0.99, Average Episode Length 4.03
+Action Seed 100: Success Rate 99.50%, Average Reward 0.99, Average Episode Length 3.93
+Action Seed 123: Success Rate 99.50%, Average Reward 0.99, Average Episode Length 3.77
+Action Seed 999: Success Rate 99.40%, Average Reward 0.99, Average Episode Length 3.93
+Action Seed 2024: Success Rate 99.50%, Average Reward 0.99, Average Episode Length 3.89
+
+Interpretation:
+The centralized PPO policy is evaluated in a randomized-obstacle multi-agent foraging environment. The random baseline measures uninformed exploration, while the greedy obstacle-aware baseline uses local one-step distance minimization without full path planning. The deterministic PPO result measures argmax action selection, whereas the stochastic PPO result measures performance when sampling from the learned policy distribution.
