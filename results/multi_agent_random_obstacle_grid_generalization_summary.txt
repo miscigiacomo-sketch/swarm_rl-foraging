@@ -1,0 +1,74 @@
+MULTI-AGENT RANDOM-OBSTACLE GRID GENERALIZATION
+================================================
+
+Experiment setup:
+- Training grid size: 5x5
+- Evaluation grid sizes: 5x5 and 10x10
+- Number of agents: 2
+- Random obstacles: True
+- Number of obstacles: 3
+- Max steps: 50
+- Control type: centralized joint action space
+- Joint action space: 16 actions
+- Observation size: 12
+- Evaluation episodes: 1000 seeded episodes
+- Model: models/ppo_multi_agent_2agents_random_obstacles.zip
+
+RESULTS: 5x5
+----------------------------------------
+Random baseline: 81.50% success, average reward 0.81, average episode length 22.24
+Greedy obstacle-aware baseline: 93.50% success, average reward 0.94, average episode length 5.45
+PPO deterministic:
+Success Rate: 82.40%
+Average Reward: 0.82
+Average Episode Length: 10.77
+PPO stochastic:
+Mean Success Rate: 99.40%
+Success Rate Std: 0.13%
+Min Success Rate: 99.20%
+Max Success Rate: 99.60%
+Mean Average Reward: 0.99
+Mean Average Episode Length: 3.91
+
+Per-action-seed stochastic results:
+Action Seed 0: Success Rate 99.40%, Average Reward 0.99, Average Episode Length 3.90
+Action Seed 1: Success Rate 99.20%, Average Reward 0.99, Average Episode Length 3.96
+Action Seed 2: Success Rate 99.20%, Average Reward 0.99, Average Episode Length 3.98
+Action Seed 3: Success Rate 99.60%, Average Reward 1.00, Average Episode Length 3.76
+Action Seed 4: Success Rate 99.30%, Average Reward 0.99, Average Episode Length 3.91
+Action Seed 42: Success Rate 99.40%, Average Reward 0.99, Average Episode Length 4.03
+Action Seed 100: Success Rate 99.50%, Average Reward 0.99, Average Episode Length 3.93
+Action Seed 123: Success Rate 99.50%, Average Reward 0.99, Average Episode Length 3.77
+Action Seed 999: Success Rate 99.40%, Average Reward 0.99, Average Episode Length 3.93
+Action Seed 2024: Success Rate 99.50%, Average Reward 0.99, Average Episode Length 3.89
+
+RESULTS: 10x10
+----------------------------------------
+Random baseline: 37.60% success, average reward 0.38, average episode length 38.81
+Greedy obstacle-aware baseline: 95.10% success, average reward 0.95, average episode length 7.03
+PPO deterministic:
+Success Rate: 86.30%
+Average Reward: 0.86
+Average Episode Length: 11.51
+PPO stochastic:
+Mean Success Rate: 99.98%
+Success Rate Std: 0.06%
+Min Success Rate: 99.80%
+Max Success Rate: 100.00%
+Mean Average Reward: 1.00
+Mean Average Episode Length: 7.15
+
+Per-action-seed stochastic results:
+Action Seed 0: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 7.18
+Action Seed 1: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 7.28
+Action Seed 2: Success Rate 99.80%, Average Reward 1.00, Average Episode Length 7.35
+Action Seed 3: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 7.11
+Action Seed 4: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 7.08
+Action Seed 42: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 7.12
+Action Seed 100: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 7.20
+Action Seed 123: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 7.11
+Action Seed 999: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 7.06
+Action Seed 2024: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 6.99
+
+Interpretation:
+This experiment evaluates whether the centralized PPO policy trained on 5x5 randomized-obstacle environments can generalize to a larger 10x10 grid while keeping the same observation structure and number of random obstacles. Comparing 5x5 and 10x10 performance measures spatial generalization. Random and greedy baselines are included to separate learned-policy performance from uninformed exploration and local obstacle-aware heuristics.
