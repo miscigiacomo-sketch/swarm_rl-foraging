@@ -1,0 +1,17 @@
+experiment,scenario,environment,agents,grid_size,method,success_rate_percent,average_episode_length
+Exp. 21,2 agents fixed obstacles 5x5,fixed_obstacles,2,5,Random baseline,76.4,24.63
+Exp. 21,2 agents fixed obstacles 5x5,fixed_obstacles,2,5,Greedy baseline,93.1,5.83
+Exp. 21,2 agents fixed obstacles 5x5,fixed_obstacles,2,5,PPO deterministic,92.8,6.08
+Exp. 21,2 agents fixed obstacles 5x5,fixed_obstacles,2,5,PPO stochastic,100.0,3.32
+Exp. 23,2 agents random obstacles 5x5,random_obstacles,2,5,Random baseline,81.5,22.24
+Exp. 23,2 agents random obstacles 5x5,random_obstacles,2,5,Greedy baseline,93.5,5.45
+Exp. 23,2 agents random obstacles 5x5,random_obstacles,2,5,PPO deterministic,82.4,10.77
+Exp. 23,2 agents random obstacles 5x5,random_obstacles,2,5,PPO stochastic,99.4,3.91
+Exp. 24,2 agents random obstacles 10x10,random_obstacles,2,10,Random baseline,37.6,38.81
+Exp. 24,2 agents random obstacles 10x10,random_obstacles,2,10,Greedy baseline,95.1,7.03
+Exp. 24,2 agents random obstacles 10x10,random_obstacles,2,10,PPO deterministic,86.3,11.51
+Exp. 24,2 agents random obstacles 10x10,random_obstacles,2,10,PPO stochastic,99.98,7.15
+Exp. 25,3 agents random obstacles 10x10,random_obstacles,3,10,Random baseline,50.0,35.12
+Exp. 25,3 agents random obstacles 10x10,random_obstacles,3,10,Greedy baseline,96.2,5.66
+Exp. 25,3 agents random obstacles 10x10,random_obstacles,3,10,PPO deterministic,65.0,21.72
+Exp. 25,3 agents random obstacles 10x10,random_obstacles,3,10,PPO stochastic,99.82,9.92
