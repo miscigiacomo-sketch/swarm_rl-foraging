@@ -1,0 +1,68 @@
+FINAL COMPARATIVE ANALYSIS
+==========================
+
+Included scenarios:
+- Exp. 21: 2 agents, fixed obstacles, 5x5
+- Exp. 23: 2 agents, random obstacles, 5x5
+- Exp. 24: 2 agents, random obstacles, 10x10
+- Exp. 25: 3 agents, random obstacles, 10x10
+
+Success rate comparison:
+
+Exp. 21 - 2 agents, fixed obstacles, 5x5
+Random baseline: 76.40%
+Greedy baseline: 93.10%
+PPO deterministic: 92.80%
+PPO stochastic: 100.00%
+
+Exp. 23 - 2 agents, random obstacles, 5x5
+Random baseline: 81.50%
+Greedy baseline: 93.50%
+PPO deterministic: 82.40%
+PPO stochastic: 99.40%
+
+Exp. 24 - 2 agents, random obstacles, 10x10
+Random baseline: 37.60%
+Greedy baseline: 95.10%
+PPO deterministic: 86.30%
+PPO stochastic: 99.98%
+
+Exp. 25 - 3 agents, random obstacles, 10x10
+Random baseline: 50.00%
+Greedy baseline: 96.20%
+PPO deterministic: 65.00%
+PPO stochastic: 99.82%
+
+Average episode length comparison:
+
+Exp. 21 - 2 agents, fixed obstacles, 5x5
+Random baseline: 24.63
+Greedy baseline: 5.83
+PPO deterministic: 6.08
+PPO stochastic: 3.32
+
+Exp. 23 - 2 agents, random obstacles, 5x5
+Random baseline: 22.24
+Greedy baseline: 5.45
+PPO deterministic: 10.77
+PPO stochastic: 3.91
+
+Exp. 24 - 2 agents, random obstacles, 10x10
+Random baseline: 38.81
+Greedy baseline: 7.03
+PPO deterministic: 11.51
+PPO stochastic: 7.15
+
+Exp. 25 - 3 agents, random obstacles, 10x10
+Random baseline: 35.12
+Greedy baseline: 5.66
+PPO deterministic: 21.72
+PPO stochastic: 9.92
+
+Main findings:
+1. PPO stochastic deployment achieved the highest success rate in all included scenarios.
+2. PPO stochastic is not equivalent to random exploration. Actions are sampled from the learned PPO policy distribution, not uniformly from the action space.
+3. Deterministic PPO became less robust in the most complex 3-agent 10x10 scenario, where the joint action space increased from 16 to 64 actions.
+4. The greedy obstacle-aware baseline remained strong, especially in terms of episode length, but it is a hand-coded local heuristic rather than a learned controller.
+5. The 10x10 experiments increased the spatial search space and supported the analysis of grid-size generalization.
+6. The 3-agent experiment strengthened the swarm-inspired framing by testing scalability to a larger multi-agent system.
