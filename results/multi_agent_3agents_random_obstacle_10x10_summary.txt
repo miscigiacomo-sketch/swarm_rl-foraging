@@ -1,0 +1,47 @@
+3-AGENT RANDOM-OBSTACLE PPO EVALUATION ON 10x10
+================================================
+
+Environment setup:
+- Grid size: 10x10
+- Number of agents: 3
+- Max steps: 50
+- Random obstacles: True
+- Number of obstacles: 3
+- Control type: centralized joint action space
+- Joint action space: 64 actions
+- Observation size: 14
+
+Model: models/ppo_multi_agent_3agents_random_obstacles_10x10.zip
+Evaluation episodes: 1000 seeded episodes
+
+Baselines:
+Random baseline: 50.00% success, average reward 0.50, average episode length 35.12
+Greedy obstacle-aware baseline: 96.20% success, average reward 0.96, average episode length 5.66
+
+PPO deterministic:
+Success Rate: 65.00%
+Average Reward: 0.65
+Average Episode Length: 21.72
+
+PPO stochastic:
+Mean Success Rate: 99.82%
+Success Rate Std: 0.11%
+Min Success Rate: 99.70%
+Max Success Rate: 100.00%
+Mean Average Reward: 1.00
+Mean Average Episode Length: 9.92
+
+Per-action-seed stochastic results:
+Action Seed 0: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 9.73
+Action Seed 1: Success Rate 99.80%, Average Reward 1.00, Average Episode Length 9.73
+Action Seed 2: Success Rate 99.80%, Average Reward 1.00, Average Episode Length 10.20
+Action Seed 3: Success Rate 99.70%, Average Reward 1.00, Average Episode Length 10.05
+Action Seed 4: Success Rate 99.80%, Average Reward 1.00, Average Episode Length 9.97
+Action Seed 42: Success Rate 100.00%, Average Reward 1.00, Average Episode Length 9.77
+Action Seed 100: Success Rate 99.90%, Average Reward 1.00, Average Episode Length 9.94
+Action Seed 123: Success Rate 99.80%, Average Reward 1.00, Average Episode Length 9.85
+Action Seed 999: Success Rate 99.70%, Average Reward 1.00, Average Episode Length 10.02
+Action Seed 2024: Success Rate 99.70%, Average Reward 1.00, Average Episode Length 9.93
+
+Interpretation:
+This experiment evaluates scalability from two to three agents in a 10x10 randomized-obstacle environment. Increasing the number of agents increases the joint action space from 16 to 64 actions and tests whether centralized PPO can still learn effective collective foraging behavior under randomized environmental layouts.
