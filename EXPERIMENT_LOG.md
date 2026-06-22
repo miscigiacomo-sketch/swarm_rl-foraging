@@ -654,21 +654,75 @@ The experiment strengthens the swarm-inspired framing of the project by showing 
 
 ---
 
-## Next Planned Work
+## Experiment 26 - Final Comparative Analysis
 
-The main numerical experiments are now complete.
+| Field | Value |
+|---|---|
+| Analysis Type | Final comparative analysis |
+| Compared Methods | Random baseline, greedy obstacle-aware baseline, PPO deterministic, PPO stochastic |
+| Compared Scenarios | 2-agent fixed obstacles 5x5, 2-agent random obstacles 5x5, 2-agent random obstacles 10x10, 3-agent random obstacles 10x10 |
+| Analysis Script | `evaluation/generate_final_comparative_analysis.py` |
+| CSV Output | `results/final_analysis/final_comparative_results.csv` |
+| Summary Output | `results/final_analysis/final_comparative_summary.txt` |
+| Plot Outputs | `plots/final_success_rate_comparison.png`, `plots/final_episode_length_comparison.png`, `plots/ppo_deterministic_vs_stochastic_success.png`, `plots/ppo_stochastic_gain_over_deterministic.png` |
 
-The remaining work should focus on:
+### Conclusion
 
-* final comparative analysis;
-* final plots and tables;
-* learned-behavior and failure analysis;
-* README update;
-* final report preparation.
+Experiment 26 consolidated the main final results into a single comparative analysis.
 
-No additional experiments should be added unless there is a clear reason and enough time.
+The analysis compared random baselines, greedy obstacle-aware baselines, deterministic PPO, and stochastic PPO across the key final multi-agent scenarios. This made it easier to evaluate the effect of obstacles, randomized layouts, grid-size generalization, agent-count scaling, and PPO deployment mode.
+
+The main conclusion was that stochastic PPO achieved the highest success rate in all final scenarios. Deterministic PPO became less reliable in the most complex settings, especially in the 3-agent 10x10 random-obstacle environment.
 
 ---
+
+## Experiment 27 - Learned-Behavior and Failure Analysis
+
+| Field | Value |
+|---|---|
+| Analysis Type | Learned-behavior and failure analysis |
+| Main Focus | Deterministic vs stochastic PPO behavior |
+| Output File | `results/final_analysis/learned_behavior_analysis.md` |
+| Related Experiments | Experiments 13, 14, 23, 24, 25, 26 |
+
+### Conclusion
+
+Experiment 27 analyzed what the PPO policy appeared to learn and why stochastic deployment performed better than deterministic deployment.
+
+The analysis emphasized that PPO stochastic deployment is not equivalent to random exploration. Instead, actions are sampled from the learned PPO policy distribution. In complex scenarios, deterministic argmax action selection can repeat locally likely but globally ineffective actions, causing loops or no-move behavior. Stochastic sampling can select alternative high-probability actions and therefore improve robustness.
+
+This analysis also connected the results to the multi-agent setting. As the number of agents increased, the centralized joint action space grew from `4^2 = 16` to `4^3 = 64`, making deterministic joint-action selection more fragile. Stochastic PPO remained highly successful under this increased action-space complexity.
+
+---
+
+## Experiment 28 - Sensitivity Analysis
+
+| Field | Value |
+|---|---|
+| Analysis Type | Sensitivity and robustness analysis |
+| Main Factors | Obstacle configuration, grid size, agent count, PPO deployment mode |
+| Plot Script | `evaluation/generate_sensitivity_analysis_plot.py` |
+| Plot Output | `plots/sensitivity_to_key_factors.png` |
+| Summary Output | `results/final_analysis/sensitivity_analysis_summary.txt` |
+
+### Compared Factors
+
+| Factor | Compared Values |
+|---|---|
+| Obstacle configuration | Fixed obstacles vs random obstacles |
+| Grid size | 5x5 vs 10x10 |
+| Agent count | 2 agents vs 3 agents |
+| PPO deployment mode | Deterministic vs stochastic |
+
+### Main Findings
+
+The sensitivity analysis shows that randomized obstacles mainly reduce deterministic PPO performance, while stochastic PPO remains highly robust.
+
+Increasing the grid size strongly penalizes the random baseline, confirming that uninformed exploration becomes much harder in larger spatial environments.
+
+Increasing the number of agents from two to three substantially reduces deterministic PPO performance because the centralized joint action space grows from `4^2 = 16` to `4^3 = 64`.
+
+The gain from stochastic PPO deployment becomes larger in more complex scenarios, supporting the conclusion that sampling from the learned PPO policy distribution improves robustness compared to deterministic argmax deployment.
 
 # Summary Table
 
@@ -705,6 +759,9 @@ No additional experiments should be added unless there is a clear reason and eno
 | 3-Agent Random-Obstacle Greedy Baseline | N/A | 10x10 randomized obstacles, 3 agents | N/A | 96.20% | 0.96 | 5.66 |
 | 3-Agent Random-Obstacle PPO Deterministic | 10x10 randomized obstacles, 3 agents | 10x10 randomized obstacles, 3 agents | 200k | 65.00% | 0.65 | 21.72 |
 | 3-Agent Random-Obstacle PPO Stochastic | 10x10 randomized obstacles, 3 agents | 10x10 randomized obstacles, 3 agents | 200k | 99.82% | 1.00 | 9.92 |
+| Final Comparative Analysis | N/A | Key final multi-agent scenarios | N/A | N/A | N/A | N/A |
+| Learned-Behavior Analysis | N/A | Final PPO behavior and failure analysis | N/A | N/A | N/A | N/A |
+| Sensitivity Analysis | N/A | Key experimental factors | N/A | N/A | N/A | N/A |
 
 ---
 
@@ -737,4 +794,8 @@ No additional experiments should be added unless there is a clear reason and eno
 25. Stochastic PPO remained highly robust in the 3-agent 10x10 environment, achieving 99.82% mean success.
 26. PPO stochastic deployment is not random exploration; it samples from the learned PPO policy distribution.
 27. The project is best framed as swarm-inspired multi-agent foraging with centralized joint-action reinforcement learning, not as a fully decentralized swarm intelligence system.
-28. The remaining work should focus on final comparative analysis, final plots, learned-behavior analysis, README update, and final report preparation.
+28. Final comparative analysis consolidated the main multi-agent scenarios into a single set of tables, plots, and summary files.
+29. Learned-behavior analysis showed that deterministic PPO can become fragile because argmax action selection may repeat locally likely but ineffective actions.
+30. Sensitivity analysis showed that performance depends strongly on obstacle configuration, grid size, number of agents, and PPO deployment mode.
+31. The gain from stochastic PPO deployment increases in more complex scenarios, especially in the 3-agent 10x10 random-obstacle setting.
+

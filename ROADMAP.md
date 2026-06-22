@@ -4,7 +4,6 @@ This roadmap defines the development path for the `swarm_rl-foraging` project.
 
 The project is structured as a progressive reinforcement-learning study. The environment complexity is increased step by step, starting from a single-agent grid-world and progressing toward swarm-inspired multi-agent foraging with obstacles, randomized environments, and scalability tests.
 
----
 
 ## Overall Scientific Direction
 
@@ -35,7 +34,6 @@ The learned controller is a centralized joint-action PPO policy. Therefore, the 
 
 The project also does not invent PPO. It implements, adapts, and experimentally analyzes PPO in a custom bio-inspired foraging environment.
 
----
 
 # Completed Work
 
@@ -49,7 +47,6 @@ Status: completed
 |---|---:|---:|---:|
 | Random Agent | 63.00% | 0.63 | 30.55 |
 
----
 
 ### Experiment 2 - PPO Baseline
 
@@ -63,7 +60,6 @@ Main finding:
 
 PPO strongly outperformed the random baseline in the basic 5x5 foraging task.
 
----
 
 ### Experiment 3 - Grid-Size Generalization
 
@@ -77,7 +73,6 @@ Main finding:
 
 The PPO policy trained on 5x5 generalized reasonably well to a larger no-obstacle 10x10 grid, although average episode length increased.
 
----
 
 ### Experiment 4 - Fixed Obstacles, PPO 20k
 
@@ -87,7 +82,6 @@ Status: completed
 |---|---:|---:|---:|---:|
 | 5x5 fixed obstacles | 20,000 | 79.00% | 0.79 | 13.34 |
 
----
 
 ### Experiment 5 - Fixed Obstacles, PPO 50k
 
@@ -101,7 +95,6 @@ Main finding:
 
 Increasing training time alone did not improve fixed-obstacle performance.
 
----
 
 ### Experiment 6 - Fixed Obstacles with State Augmentation
 
@@ -115,7 +108,6 @@ Main finding:
 
 Adding obstacle coordinates to the observation improved fixed-obstacle PPO performance from 70% to 87%.
 
----
 
 ### Experiment 7 - Reachability Validation for Randomized Obstacles
 
@@ -129,7 +121,6 @@ Main finding:
 
 Randomized obstacle environments were guaranteed to be solvable using BFS reachability validation.
 
----
 
 ### Experiment 8 - Fixed-Obstacle PPO Evaluated on Randomized Obstacles
 
@@ -143,7 +134,6 @@ Main finding:
 
 The fixed-obstacle PPO policy did not fully generalize to randomized obstacle layouts.
 
----
 
 ### Experiment 9 - Randomized Obstacles PPO 50k
 
@@ -153,7 +143,6 @@ Status: completed
 |---:|---:|---:|---:|
 | 50,000 | 70.90% | 0.71 | 17.14 |
 
----
 
 ### Experiment 10 - Randomized Obstacles PPO 100k
 
@@ -167,7 +156,6 @@ Main finding:
 
 Increasing randomized-obstacle training from 50k to 100k improved robustness and efficiency.
 
----
 
 ### Experiment 11 - Randomized Obstacles PPO 200k
 
@@ -181,7 +169,6 @@ Main finding:
 
 The deterministic success rate plateaued around 76%.
 
----
 
 ### Experiment 12 - BFS Oracle Baseline on Randomized Obstacles
 
@@ -195,8 +182,6 @@ Main finding:
 
 The task was solvable; PPO failures were not caused by impossible environments.
 
----
-
 ### Experiment 13 - PPO Failure-Case Analysis on Randomized Obstacles
 
 Status: completed
@@ -209,7 +194,6 @@ Main finding:
 
 Failed deterministic PPO episodes were dominated by repeated no-move behavior.
 
----
 
 ### Experiment 14 - PPO Policy Sampling Mode Analysis
 
@@ -224,7 +208,6 @@ Main finding:
 
 Stochastic policy sampling greatly improved performance and reduced repeated no-move failures.
 
----
 
 ### Experiment 15 - Random-Obstacle Grid-Size Generalization
 
@@ -239,7 +222,6 @@ Main finding:
 
 The stochastic PPO policy trained on 5x5 randomized obstacles generalized successfully to a larger 10x10 randomized-obstacle environment.
 
----
 
 ## Multi-Agent Experiments
 
@@ -258,7 +240,6 @@ Main finding:
 
 Adding more agents improved random exploration, while the greedy baseline was very strong without obstacles.
 
----
 
 ### Experiment 17 - Multi-Agent PPO, 2 Agents
 
@@ -275,7 +256,6 @@ Main finding:
 
 The centralized PPO controller successfully learned the two-agent no-obstacle foraging task.
 
----
 
 ### Experiment 18 - Multi-Agent Grid-Size Generalization
 
@@ -290,7 +270,6 @@ Main finding:
 
 The two-agent PPO policy trained on 5x5 generalized very well to a larger 10x10 no-obstacle environment.
 
----
 
 ### Experiment 19 - Multi-Agent Fixed-Obstacle Environment
 
@@ -324,7 +303,6 @@ Main finding:
 
 Fixed-obstacle support was added without breaking the previous no-obstacle multi-agent workflow.
 
----
 
 ### Experiment 20 - Multi-Agent Fixed-Obstacle Baselines
 
@@ -339,7 +317,6 @@ Main finding:
 
 The greedy obstacle-aware baseline was strong but not optimal because it uses local Manhattan-distance decisions rather than full path planning.
 
----
 
 ### Experiment 21 - Multi-Agent Fixed-Obstacle PPO
 
@@ -356,7 +333,6 @@ Main finding:
 
 The centralized PPO controller learned the fixed-obstacle multi-agent foraging task. Stochastic PPO achieved the best result with 100% success and the shortest average episode length.
 
----
 
 ### Experiment 22 - Multi-Agent Random-Obstacle Environment
 
@@ -394,7 +370,6 @@ Main finding:
 
 The environment can generate randomized obstacle layouts while preserving reachability and backward compatibility with previous fixed-obstacle and no-obstacle setups.
 
----
 
 ### Experiment 23 - Multi-Agent Random-Obstacle PPO, 5x5
 
@@ -433,7 +408,6 @@ Main finding:
 
 PPO stochastic strongly outperformed all other methods. PPO deterministic was much weaker, showing that deterministic argmax deployment can underuse the learned PPO policy distribution.
 
----
 
 ### Experiment 24 - Multi-Agent Random-Obstacle Grid-Size Generalization
 
@@ -465,7 +439,6 @@ Main finding:
 
 The 10x10 grid increased the spatial search space while keeping the same number of agents and obstacles. PPO stochastic generalized extremely well, reaching 99.98% success on 10x10.
 
----
 
 ### Experiment 25 - 3-Agent Random-Obstacle Scalability on 10x10
 
@@ -506,11 +479,101 @@ Increasing from 2 to 3 agents increased the centralized joint action space from 
 
 This strengthens the swarm-inspired scalability story while also showing the limitation of deterministic argmax deployment in larger joint action spaces.
 
----
+## Final Analysis Experiments
+
+### Experiment 26 - Final Comparative Analysis
+
+Status: completed
+
+Created final comparative tables and plots across the main multi-agent scenarios.
+
+Compared methods:
+
+* random baseline;
+* greedy obstacle-aware baseline;
+* PPO deterministic;
+* PPO stochastic.
+
+Compared scenarios:
+
+* 2 agents, fixed obstacles, 5x5;
+* 2 agents, randomized obstacles, 5x5;
+* 2 agents, randomized obstacles, 10x10;
+* 3 agents, randomized obstacles, 10x10.
+
+Outputs:
+
+| Output | Path |
+|---|---|
+| Final comparative CSV | `results/final_analysis/final_comparative_results.csv` |
+| Final comparative summary | `results/final_analysis/final_comparative_summary.txt` |
+| Success-rate comparison plot | `plots/final_success_rate_comparison.png` |
+| Episode-length comparison plot | `plots/final_episode_length_comparison.png` |
+| Deterministic vs stochastic PPO plot | `plots/ppo_deterministic_vs_stochastic_success.png` |
+| Stochastic PPO gain plot | `plots/ppo_stochastic_gain_over_deterministic.png` |
+| Generation script | `evaluation/generate_final_comparative_analysis.py` |
+
+Main finding:
+
+The final comparative analysis showed that PPO stochastic deployment achieved the highest success rate in all final multi-agent scenarios. Deterministic PPO became less reliable in the most complex 3-agent 10x10 scenario, while stochastic PPO remained near-perfect.
+
+
+### Experiment 27 - Learned-Behavior and Failure Analysis
+
+Status: completed
+
+Added a written learned-behavior and failure-analysis summary explaining the observed difference between deterministic and stochastic PPO deployment.
+
+Output:
+
+| Output | Path |
+|---|---|
+| Learned-behavior analysis | `results/final_analysis/learned_behavior_analysis.md` |
+
+Main analysis points:
+
+* PPO stochastic is not random exploration; it samples from the trained PPO policy distribution.
+* PPO deterministic uses argmax action selection and can repeat locally likely but globally ineffective actions.
+* Randomized obstacles and larger joint action spaces make deterministic PPO more fragile.
+* Stochastic PPO can sample alternative high-probability actions, helping it escape repeated no-move or blocked-action patterns.
+* The project is swarm-inspired but still uses centralized joint-action control, so it should not be claimed as a fully decentralized swarm-intelligence system.
+
+Main finding:
+
+The learned PPO policy should not be interpreted only through deterministic argmax behavior. The stochastic deployment results show that the learned policy distribution contains useful alternative actions that improve robustness in randomized-obstacle and multi-agent scenarios.
+
+
+### Experiment 28 - Sensitivity Analysis
+
+Status: completed
+
+Added a final sensitivity and robustness analysis over the key experimental factors that most directly affect learning performance.
+
+Compared factors:
+
+| Factor | Compared Values |
+|---|---|
+| Obstacle configuration | Fixed obstacles vs randomized obstacles |
+| Grid size | 5x5 vs 10x10 |
+| Agent count | 2 agents vs 3 agents |
+| PPO deployment mode | Deterministic vs stochastic |
+
+Outputs:
+
+| Output | Path |
+|---|---|
+| Sensitivity analysis plot | `plots/sensitivity_to_key_factors.png` |
+| Sensitivity analysis summary | `results/final_analysis/sensitivity_analysis_summary.txt` |
+| Generation script | `evaluation/generate_sensitivity_analysis_plot.py` |
+
+Main finding:
+
+The sensitivity analysis showed that randomized obstacles mainly reduce deterministic PPO performance, larger grids strongly penalize random exploration, and increasing the number of agents makes deterministic joint-action control less robust. Stochastic PPO remained robust across these changes, and its success-rate gain over deterministic PPO increased in more complex scenarios.
+
 
 # Current Status
 
-The main numerical experiments are complete.
+The main numerical experiments and final analysis phase are complete.
 
 The project has progressed through:
 
@@ -522,109 +585,12 @@ The project has progressed through:
 * multi-agent no-obstacle control;
 * multi-agent fixed-obstacle control;
 * multi-agent randomized-obstacle control;
-* 2-agent to 3-agent scalability.
+* 2-agent to 3-agent scalability;
+* final comparative analysis;
+* learned-behavior and failure analysis;
+* sensitivity analysis over key experimental factors.
 
-The strongest current learned results are obtained with PPO stochastic deployment.
-
----
-
-# Next Planned Work
-
-## Experiment 26 - Final Comparative Analysis
-
-Status: next
-
-### Goal
-
-Create final comparative tables and plots across the main scenarios.
-
-### Planned Comparisons
-
-* random baseline;
-* greedy obstacle-aware baseline;
-* PPO deterministic;
-* PPO stochastic;
-* fixed obstacles vs randomized obstacles;
-* 5x5 vs 10x10;
-* 2 agents vs 3 agents.
-
-### Planned Outputs
-
-| Output | Suggested Path |
-|---|---|
-| Final comparative CSV | `results/final_analysis/final_comparative_results.csv` |
-| Final comparative summary | `results/final_analysis/final_comparative_summary.txt` |
-| Success-rate plot | `plots/final_success_rate_comparison.png` |
-| Episode-length plot | `plots/final_episode_length_comparison.png` |
-| Deterministic vs stochastic plot | `plots/ppo_deterministic_vs_stochastic_success.png` |
-
-### Scientific Motivation
-
-This analysis will convert the experiment sequence into a compact final result set for the README and final report.
-
----
-
-## Experiment 27 - Learned-Behavior and Failure Analysis
-
-Status: planned
-
-### Goal
-
-Explain the observed performance differences between deterministic and stochastic PPO deployment.
-
-### Key Questions
-
-* Why does deterministic PPO perform poorly in some randomized-obstacle settings?
-* How does stochastic policy sampling help avoid repeated suboptimal joint-action patterns?
-* Why is PPO stochastic not equivalent to random exploration?
-* How does the joint action space grow from 16 actions for 2 agents to 64 actions for 3 agents?
-* What limitations remain because the controller is centralized rather than decentralized?
-
-### Planned Output
-
-A written analysis section for the README and report, possibly supported by local qualitative visualizations.
-
----
-
-## Final Documentation Phase
-
-Status: planned
-
-### Goal
-
-Prepare the final project submission.
-
-Planned work:
-
-1. update final plots;
-2. update `README.md`;
-3. update `PROJECT_CONTEXT.md`;
-4. update `ROADMAP.md`;
-5. clean and finalize `EXPERIMENT_LOG.md`;
-6. prepare final report tables;
-7. write final scientific interpretation;
-8. write final report.
-
-The final report should emphasize:
-
-* reproducible experimental setup;
-* clear comparison against baselines;
-* sensitivity analysis;
-* analysis of learned behavior;
-* deterministic vs stochastic PPO deployment;
-* multi-agent scalability and limitations;
-* swarm-inspired framing without claiming full decentralized swarm intelligence.
-
----
-
-# Priority List for a High-Quality Final Project
-
-## Essential
-
-* Complete final comparative tables and plots.
-* Write clear learned-behavior analysis.
-* Update README with project goal, setup, commands, and main results.
-* Prepare final report with a clear scientific story.
+The strongest learned results are obtained with PPO stochastic deployment. The final remaining task is to write the scientific report and use the completed analysis files and plots to present the project clearly.
 
 ## Completed Quality Improvements
 
@@ -636,20 +602,10 @@ The final report should emphasize:
 * Completed multi-agent fixed-obstacle PPO.
 * Completed multi-agent randomized-obstacle PPO.
 * Completed 3-agent randomized-obstacle scalability.
-
-## Optional Extensions
-
-These are not recommended unless there is extra time:
-
-* decentralized/local policy baseline;
-* obstacle-density robustness;
-* larger-grid training from scratch;
-* reward shaping;
-* invalid-action penalty.
-
-At this stage, additional experiments are less important than documentation, analysis, plots, README quality, and final report clarity.
-
----
+* Completed final comparative tables and plots.
+* Completed learned-behavior and failure analysis.
+* Completed sensitivity analysis over key experimental factors.
+* Updated final project documentation and README.
 
 # Current Best Models
 
@@ -681,20 +637,21 @@ Important distinction:
 * PPO stochastic samples from the trained PPO policy distribution and is still reinforcement learning.
 * PPO deterministic selects the highest-probability action from the trained PPO policy distribution.
 
----
 
 # Current Main Conclusion
 
-The current results show that state representation, environment randomization, policy deployment mode, grid-size scaling, and number of agents all affect PPO performance.
+The final results show that state representation, environment randomization, policy deployment mode, grid-size scaling, and number of agents all affect PPO performance.
 
-Adding obstacle coordinates to the observation improved single-agent fixed-obstacle performance from 70% to 87%.
+Adding obstacle coordinates to the observation improved single-agent fixed-obstacle performance from 70% to 87%, showing that the state representation was more important than simply increasing training duration in that setting.
 
 Randomized obstacle training improved robustness compared to fixed-obstacle training, but deterministic PPO evaluation revealed repeated no-move failure modes. BFS oracle validation confirmed that the environments were solvable, so PPO failures were caused by policy limitations rather than impossible tasks.
 
-Stochastic PPO deployment consistently improved performance by sampling from the learned policy distribution. This is not random exploration; it uses the trained PPO probabilities. The stochastic policy reached near-oracle performance in single-agent randomized-obstacle settings and continued to perform strongly in multi-agent environments.
+Stochastic PPO deployment consistently improved performance by sampling from the learned policy distribution. This is not random exploration; it uses the trained PPO action probabilities. The stochastic policy reached near-oracle performance in single-agent randomized-obstacle settings and continued to perform strongly in multi-agent environments.
 
 In the 2-agent randomized-obstacle setting, stochastic PPO achieved 99.40% success on 5x5 and 99.98% success on 10x10.
 
 In the 3-agent randomized-obstacle 10x10 setting, increasing the joint action space from 16 to 64 made deterministic PPO much less robust, with only 65.00% success. However, stochastic PPO still achieved 99.82% success.
+
+The final sensitivity analysis showed that the most important performance changes came from obstacle randomization, grid-size scaling, agent-count scaling, and deployment mode. In particular, the success-rate gain of stochastic PPO over deterministic PPO increased in more complex scenarios.
 
 The project therefore supports the conclusion that PPO can learn effective swarm-inspired multi-agent foraging behavior in the custom environment, but the learned policy is most robust when deployed stochastically and when the limitations of centralized joint-action control are clearly acknowledged.

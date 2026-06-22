@@ -1,0 +1,35 @@
+SENSITIVITY ANALYSIS SUMMARY
+============================
+
+1. Obstacle configuration effect (2 agents, 5x5):
+Fixed obstacles vs random obstacles
+- Random: fixed 76.40%, random 81.50%, difference +5.10 percentage points
+- Greedy: fixed 93.10%, random 93.50%, difference +0.40 percentage points
+- PPO det.: fixed 92.80%, random 82.40%, difference -10.40 percentage points
+- PPO stoch.: fixed 100.00%, random 99.40%, difference -0.60 percentage points
+
+2. Grid-size effect (2 agents, random obstacles):
+5x5 vs 10x10
+- Random: 5x5 81.50%, 10x10 37.60%, difference -43.90 percentage points
+- Greedy: 5x5 93.50%, 10x10 95.10%, difference +1.60 percentage points
+- PPO det.: 5x5 82.40%, 10x10 86.30%, difference +3.90 percentage points
+- PPO stoch.: 5x5 99.40%, 10x10 99.98%, difference +0.58 percentage points
+
+3. Agent-count effect (10x10, random obstacles):
+2 agents vs 3 agents
+- Random: 2 agents 37.60%, 3 agents 50.00%, difference +12.40 percentage points
+- Greedy: 2 agents 95.10%, 3 agents 96.20%, difference +1.10 percentage points
+- PPO det.: 2 agents 86.30%, 3 agents 65.00%, difference -21.30 percentage points
+- PPO stoch.: 2 agents 99.98%, 3 agents 99.82%, difference -0.16 percentage points
+
+4. PPO deployment-mode effect:
+- Fixed 5x5, 2 agents: stochastic gain 7.20 percentage points
+- Random 5x5, 2 agents: stochastic gain 17.00 percentage points
+- Random 10x10, 2 agents: stochastic gain 13.68 percentage points
+- Random 10x10, 3 agents: stochastic gain 34.82 percentage points
+
+Main findings:
+1. Randomized obstacles mainly reduced deterministic PPO performance, while stochastic PPO remained highly robust.
+2. Increasing grid size strongly penalized the random baseline, while stochastic PPO generalized very well.
+3. Increasing the number of agents substantially reduced deterministic PPO performance, but stochastic PPO remained near-perfect.
+4. The success-rate gain of stochastic over deterministic PPO increased with scenario complexity.
