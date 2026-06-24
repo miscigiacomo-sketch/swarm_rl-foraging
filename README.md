@@ -75,6 +75,15 @@ The final comparative analysis generates the following plots:
 
 ![Sensitivity to key experimental factors](plots/sensitivity_to_key_factors.png)
 
+
+## Qualitative Rollout
+
+The following animation shows a trained stochastic PPO policy in the 3-agent 10x10 randomized-obstacle environment. The rollout provides a qualitative view of the learned multi-agent behavior: agents navigate the grid, avoid obstacles, and reach the food target using the stochastic deployment mode.
+
+![3-agent stochastic PPO rollout](media/3agent_10x10_stochastic_same_seed.gif)
+
+Additional rollout animations, including deterministic failure cases and multi-agent random-obstacle demonstrations, are available in the `media/` folder.
+
 ## Sensitivity Analysis
 
 A final sensitivity and robustness analysis was added to evaluate how performance changes under key experimental factors:
@@ -187,6 +196,12 @@ swarm_rl/
 │   ├── ppo_deterministic_vs_stochastic_success.png
 │   ├── ppo_stochastic_gain_over_deterministic.png
 │   └── sensitivity_to_key_factors.png
+│
+├── media/
+│   ├── 3agent_10x10_deterministic_failure.gif
+│   ├── 3agent_10x10_stochastic_same_seed.gif
+│   ├── multi_agent_random_obstacle_10x10.gif
+│   └── multi_agent_random_obstacle_10x10_demo.gif
 │
 ├── EXPERIMENT_LOG.md
 ├── PROJECT_CONTEXT.md
