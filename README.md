@@ -204,7 +204,6 @@ swarm_rl/
 │   └── multi_agent_random_obstacle_10x10_demo.gif
 │
 ├── EXPERIMENT_LOG.md
-├── PROJECT_CONTEXT.md
 ├── ROADMAP.md
 ├── requirements.txt
 └── README.md
@@ -361,7 +360,6 @@ The project follows a staged experimental design:
 For detailed results, see:
 
 - `EXPERIMENT_LOG.md`
-- `PROJECT_CONTEXT.md`
 - `ROADMAP.md`
 - `results/final_analysis/final_comparative_summary.txt`
 - `results/final_analysis/learned_behavior_analysis.md`
